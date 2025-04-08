@@ -82,20 +82,25 @@ $hashedPassword = password_hash($data->password, PASSWORD_BCRYPT);
 
  $date = date('Y-m-d H:i:s') ;
 
-$stmt= $conn->prepare("INSERT INTO users (mobile, password, first_name, last_name, is_active, create_dt, create_uid ,is_first_deposit_done) VALUES (?, ?, ?, ?, ?,?, ?, ?)");
+$stmt= $conn->prepare("INSERT INTO Adminusers (user_id,first_name, last_name, username , password, address,email,mobile,role_id, dob, is_active, created_at, created_uid) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 
 $createUid = 1; 
 $isActive = 1; 
 $firsdtdeposit = 0;
-$stmt->bind_param("ssssissi", 
-    $mobile,                 
-    $hashedPassword,    
-    $first_name,        
-    $last_name,         
-    $isActive,     
-    $date,               
-    $createUid,
-    $firsdtdeposit
+$stmt->bind_param("sssssssssss", 
+$user_id,
+$first_name,
+$last_name,
+$username,
+$password, 
+$address,
+$email,
+$mobile,
+$role_id,
+$dob,
+$is_active,
+$created_at,
+$created_uid
 );
 
 if ($stmt->execute()) {

@@ -57,7 +57,7 @@ $mobile = isset($data->mobile) ? htmlspecialchars(trim($data->mobile)) : '';
 $password = trim($data->password);
 
 // Prepare the SQL query to find the user by mobile or username
-$query = "SELECT user_id, mobile, password, is_active , first_name, last_name,is_first_deposit_done FROM users WHERE mobile = ?";
+$query = "SELECT user_id,first_name, last_name, username , password, address,email,mobile,role_id, dob, is_active, created_at, created_uid FROM Adminusers WHERE username = ?";
  $date = date('Y-m-d H:i:s') ;
 
 $stmt= $conn->prepare($query);
@@ -80,7 +80,7 @@ if ($stmt->num_rows == 0) {
 }
 
 // Fetch user data
-$stmt->bind_result($user_id, $db_mobile, $hashed_password, $is_active, $firstname, $lastname ,$firstdeposit);
+$stmt->bind_result($user_id, $first_name, $last_name, $username $password, $address ,$email,$mobile,$role_id,$dob,$is_active,$created_at,$created_uid);
 $stmt->fetch();
 
 // Check if the account is active
