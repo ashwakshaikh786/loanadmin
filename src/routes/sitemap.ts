@@ -28,6 +28,19 @@ const sitemap: MenuItem[] = [
     active: true,
   },
   {
+    id: 'User Management',
+    subheader: 'User Management',
+    icon: 'ic:round-security',
+    active: true,
+    items: [
+      {
+        name: 'Users',
+        pathName: 'signin',
+        path: paths.usermanagement,
+      },
+    ],
+  },
+  {
     id: 'activity',
     subheader: 'Activity',
     path: '#!',

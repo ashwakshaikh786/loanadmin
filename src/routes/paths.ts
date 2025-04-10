@@ -14,7 +14,7 @@ export default {
   settings: `/${rootPaths.pageRoot}/settings`,
 test:`/${rootPaths.pageRoot}/test`,
 admin:`/${rootPaths.authRoot}/admin`,
-
+usermanagement:`/${rootPaths.pageRoot}/usermanagement`,
   signin: `/${rootPaths.authRoot}/signin`,
   signup: `/${rootPaths.authRoot}/signup`,
   forgotPassword: `/${rootPaths.authRoot}/forgot-password`,

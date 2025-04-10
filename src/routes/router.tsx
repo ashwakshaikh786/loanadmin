@@ -13,7 +13,7 @@ const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
  const Test = lazy(() => import('pages/test/test'));
  const Admin = lazy(() => import('pages/test/admin'));
-
+ const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
 
 
 
@@ -82,6 +82,22 @@ const router = createBrowserRouter(
               path: paths.signup,
               element: <Signup />,
             },
+          ],
+        },{
+          path: rootPaths.pageRoot,
+          element: (
+            <MainLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </MainLayout>
+          ),
+          children: [
+            {
+              path: paths.usermanagement,
+              element: <Usermanagement />,
+            },
+           
           ],
         },
         
