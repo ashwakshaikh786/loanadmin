@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import paths, { rootPaths } from './paths';
 import { Suspense, lazy } from 'react';
-import { Outlet, createBrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from 'layouts/main-layout';
 import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
@@ -11,11 +11,9 @@ const App = lazy(() => import('App'));
 const Dashboard = lazy(() => import('pages/dashboard/Dashbaord'));
 const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
- const Test = lazy(() => import('pages/test/test'));
- const Admin = lazy(() => import('pages/test/admin'));
- const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
-
-
+const Test = lazy(() => import('pages/test/test'));
+const Admin = lazy(() => import('pages/test/admin'));
+const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
 
 const router = createBrowserRouter(
   [
@@ -26,8 +24,13 @@ const router = createBrowserRouter(
         </Suspense>
       ),
       children: [
+        // Redirect root path to signin
         {
           path: '/',
+          element: <Navigate to={paths.signin} replace />,
+        },
+        {
+          path: paths.dashboard,
           element: (
             <MainLayout>
               <Suspense fallback={<PageLoader />}>
@@ -42,8 +45,8 @@ const router = createBrowserRouter(
             },
           ],
         },
+        // ... rest of your routes remain the same
         {
-         
           children: [
             {
               path: paths.test,
@@ -83,7 +86,8 @@ const router = createBrowserRouter(
               element: <Signup />,
             },
           ],
-        },{
+        },
+        {
           path: rootPaths.pageRoot,
           element: (
             <MainLayout>
@@ -97,10 +101,8 @@ const router = createBrowserRouter(
               path: paths.usermanagement,
               element: <Usermanagement />,
             },
-           
           ],
         },
-        
       ],
     },
   ],
@@ -110,3 +112,4 @@ const router = createBrowserRouter(
 );
 
 export default router;
+

@@ -1,4 +1,6 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent,useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -17,16 +19,58 @@ interface User {
 }
 
 const Signin = () => {
-  const [user, setUser] = useState<User>({ email: '', password: '' });
+  const [user, setUser] = useState<User>({ usernameOrEmail: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const username = sessionStorage.getItem('username');
+    const role = sessionStorage.getItem('role_name');
+    const expiry = sessionStorage.getItem('session_expiry');
+  
+    // Check if session exists and not expired
+    if (username && role && expiry && Date.now() < Number(expiry)) {
+      navigate(paths.dashboard); // redirect if still valid
+    } else {
+      // Remove expired session
+      sessionStorage.clear();
+    }
+  }, []);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(user);
+
+    try {
+   
+      const response = await axios.post('http://localhost:5000/api/user/login', {
+        usernameOrEmail: user.usernameOrEmail,
+        password: user.password,
+      });
+
+      if (response.data.success) {
+        const { username, role_name } = response.data;
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('role_name', role_name);
+      
+        // Set session expiry: current time + 24 hours
+        const expiryTime = Date.now() + 24 * 60 * 60 * 1000;
+        sessionStorage.setItem('session_expiry', expiryTime.toString());
+        navigate(paths.dashboard); // redirect to dashboard
+      } else {
+        alert(response.data.message || 'Login failed');
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error('Login error:', error);
+        alert(error.response?.data?.message || 'Login request failed');
+      } else {
+        console.error('Unexpected error:', error);
+        alert('An unexpected error occurred.');
+      }
+    }
   };
 
   return (
@@ -64,9 +108,9 @@ const Signin = () => {
       <Stack component="form" mt={3} onSubmit={handleSubmit} direction="column" gap={2}>
         <TextField
           id="email"
-          name="email"
-          type="email"
-          value={user.email}
+          name="usernameOrEmail"
+          type="text"
+          value={user.usernameOrEmail}
           onChange={handleInputChange}
           variant="filled"
           placeholder="Your Email"
