@@ -6,11 +6,13 @@ import MainLayout from 'layouts/main-layout';
 import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
 import AuthLayout from 'layouts/auth-layout';
+// import { Logout } from '@mui/icons-material';
 
 const App = lazy(() => import('App'));
 const Dashboard = lazy(() => import('pages/dashboard/Dashbaord'));
 const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
+const Logout = lazy(() => import('pages/authentication/Logout'));
 const Test = lazy(() => import('pages/test/test'));
 const Admin = lazy(() => import('pages/test/admin'));
 const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
@@ -84,6 +86,11 @@ const router = createBrowserRouter(
             {
               path: paths.signup,
               element: <Signup />,
+            },
+
+            {
+              path: paths.logout, // /auth/logout
+              element: <Logout />,
             },
           ],
         },

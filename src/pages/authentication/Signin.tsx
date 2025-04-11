@@ -13,6 +13,7 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import IconifyIcon from 'components/base/IconifyIcon';
 import paths from 'routes/paths';
+import BASE_URL from '../../config';
 
 interface User {
   [key: string]: string;
@@ -45,7 +46,7 @@ const Signin = () => {
 
     try {
    
-      const response = await axios.post('http://localhost:5000/api/user/login', {
+      const response = await axios.post(`${BASE_URL}/api/user/login`, {
         usernameOrEmail: user.usernameOrEmail,
         password: user.password,
       });
@@ -82,7 +83,7 @@ const Signin = () => {
         Welcome back! Let's continue with,
       </Typography>
 
-      <Stack mt={3} spacing={1.75} width={1}>
+      {/* <Stack mt={3} spacing={1.75} width={1}>
         <Button
           variant="contained"
           color="secondary"
@@ -101,9 +102,9 @@ const Signin = () => {
         >
           Apple
         </Button>
-      </Stack>
+      </Stack> */}
 
-      <Divider sx={{ my: 4 }}>or Signin with</Divider>
+      <Divider sx={{ my: 4 }}>Signin with</Divider>
 
       <Stack component="form" mt={3} onSubmit={handleSubmit} direction="column" gap={2}>
         <TextField

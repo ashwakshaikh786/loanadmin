@@ -12,8 +12,12 @@ import Image from 'components/base/Image';
 import IconifyIcon from 'components/base/IconifyIcon';
 import LogoImg from 'assets/images/logo.png';
 import sitemap from 'routes/sitemap';
+import paths from 'routes/paths';
+import { useNavigate } from 'react-router-dom';
+
 
 const DrawerItems = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Stack
@@ -40,7 +44,7 @@ const DrawerItems = () => {
               letterSpacing={1}
               fontFamily={fontFamily.poppins}
             >
-              Venus
+              Centeos
             </Typography>
             <Typography
               mt={-0.35}
@@ -67,9 +71,10 @@ const DrawerItems = () => {
       </List>
 
       <Box mt="auto" px={3} pb={6}>
-        <Button variant="text" startIcon={<IconifyIcon icon="ic:baseline-logout" />}>
-          Log Out
+        <Button variant="text" startIcon={<IconifyIcon icon="ic:baseline-logout" />} onClick={() => {navigate(paths.logout)}}>
+          Logout
         </Button>
+        
       </Box>
     </>
   );

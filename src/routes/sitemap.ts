@@ -68,6 +68,12 @@ const sitemap: MenuItem[] = [
         pathName: 'signup',
         path: paths.signup,
       },
+
+      {
+        name: 'Logout',
+        pathName: 'logout',
+        path: paths.logout,
+      },
     ],
   },
   {

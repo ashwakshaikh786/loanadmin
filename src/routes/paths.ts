@@ -17,6 +17,7 @@ admin:`/${rootPaths.authRoot}/admin`,
 usermanagement:`/${rootPaths.pageRoot}/usermanagement`,
   signin: `/${rootPaths.authRoot}/signin`,
   signup: `/${rootPaths.authRoot}/signup`,
+  logout: `/${rootPaths.authRoot}/logout`,
   forgotPassword: `/${rootPaths.authRoot}/forgot-password`,
   404: `/${rootPaths.errorRoot}/404`,
 };

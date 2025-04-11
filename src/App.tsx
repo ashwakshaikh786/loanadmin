@@ -4,6 +4,8 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { isSessionValid } from './session'; // adjust path if needed
 import paths from './routes/paths'; // adjust if needed
 
+
+
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();

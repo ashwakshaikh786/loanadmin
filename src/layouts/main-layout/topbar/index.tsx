@@ -1,13 +1,13 @@
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
-import Badge from '@mui/material/Badge';
+// import Badge from '@mui/material/Badge';
 import Toolbar from '@mui/material/Toolbar';
-import TextField from '@mui/material/TextField';
+// import TextField from '@mui/material/TextField';
 import ButtonBase from '@mui/material/ButtonBase';
 import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
+// import InputAdornment from '@mui/material/InputAdornment';
 import IconifyIcon from 'components/base/IconifyIcon';
-import LanguageSelect from './LanguageSelect';
+// import LanguageSelect from './LanguageSelect';
 import ProfileMenu from './ProfileMenu';
 import Image from 'components/base/Image';
 import LogoImg from 'assets/images/logo.png';
@@ -60,7 +60,7 @@ const Topbar = ({ isClosing, mobileOpen, setMobileOpen }: TopbarProps) => {
             <IconifyIcon icon="eva:search-fill" />
           </IconButton>
         </Toolbar>
-
+{/* 
         <TextField
           variant="filled"
           placeholder="Search"
@@ -72,15 +72,15 @@ const Topbar = ({ isClosing, mobileOpen, setMobileOpen }: TopbarProps) => {
               </InputAdornment>
             ),
           }}
-        />
+        /> */}
       </Stack>
 
       <Stack spacing={{ xs: 1, sm: 2 }} alignItems="center">
-        <LanguageSelect />
+        {/* <LanguageSelect /> */}
         <IconButton size="large">
-          <Badge badgeContent={2} color="error">
-            <IconifyIcon icon="ic:outline-notifications-none" />
-          </Badge>
+          {/* <Badge badgeContent={2} color="error">
+            {/* <IconifyIcon icon="ic:outline-notifications-none" /> */}
+          {/* </Badge> */}
         </IconButton>
         <ProfileMenu />
       </Stack>
