@@ -16,6 +16,8 @@ const Logout = lazy(() => import('pages/authentication/Logout'));
 const Test = lazy(() => import('pages/test/test'));
 const Admin = lazy(() => import('pages/test/admin'));
 const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
+const Usercontrol = lazy(() => import('pages/userManagement/userExcel'));
+
 
 const router = createBrowserRouter(
   [
@@ -46,7 +48,21 @@ const router = createBrowserRouter(
               element: <Dashboard />,
             },
           ],
-        },
+        },{
+          path: rootPaths.pageRoot,
+          element: (
+            <MainLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </MainLayout>
+          ),
+          children: [
+            {
+              path: paths.usercontrol,
+              element: <Usercontrol />,
+            },]
+          },
         // ... rest of your routes remain the same
         {
           children: [

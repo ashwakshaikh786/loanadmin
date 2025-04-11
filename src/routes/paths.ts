@@ -15,6 +15,7 @@ export default {
 test:`/${rootPaths.pageRoot}/test`,
 admin:`/${rootPaths.authRoot}/admin`,
 usermanagement:`/${rootPaths.pageRoot}/usermanagement`,
+usercontrol:`/${rootPaths.pageRoot}/usercontrol`,
   signin: `/${rootPaths.authRoot}/signin`,
   signup: `/${rootPaths.authRoot}/signup`,
   logout: `/${rootPaths.authRoot}/logout`,

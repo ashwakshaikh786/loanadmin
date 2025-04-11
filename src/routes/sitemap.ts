@@ -40,6 +40,20 @@ const sitemap: MenuItem[] = [
       },
     ],
   },
+  
+  {
+    id: 'Tellecaller Management',
+    subheader: 'Tellecaller Management',
+    icon: 'ic:round-security',
+    active: true,
+    items: [
+      {
+        name: 'Customers',
+        pathName: 'signin',
+        path: paths.usercontrol,
+      },
+    ],
+  },
   {
     id: 'activity',
     subheader: 'Activity',
