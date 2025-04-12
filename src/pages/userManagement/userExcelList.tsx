@@ -7,6 +7,10 @@ import DataGridFooter from 'components/common/DataGridFooter';
 import ActionMenu from 'components/sections/dashboard/transaction-history/ActionMenu';
 import BASE_URL from '../../config';
 
+import {
+    Paper,
+    Stack,
+  } from '@mui/material';
 
 interface User {
   _id: number;
@@ -121,6 +125,8 @@ const UserListTable = ({ searchText }: UserListTableProps) => {
   }, [searchText]);
 
   return (
+    <Stack alignItems="center" justifyContent="center" >
+        <Paper sx={{ width: '100%'}}>
     <DataGrid
     apiRef={apiRef}
     density="standard"
@@ -137,7 +143,8 @@ const UserListTable = ({ searchText }: UserListTableProps) => {
     pageSizeOptions={[5]}
     autoHeight  // ✅ Add this line
   />
-  
+  </Paper>
+  </Stack>
   );
 };
 

@@ -87,7 +87,7 @@ import {
   
     return (
       <Stack alignItems="center" justifyContent="center" px={1} py={4}>
-        <Paper sx={{ px: 4, py: 4, width: '100%', maxWidth: 900 }}>
+        <Paper sx={{ px: 4, py: 4, width: '100%'}}>
         <Grid container alignItems="center" sx={{ mb: 3, position: 'relative' }}>
   <Grid item xs={12}>
     <Typography variant="h4" align="center">
@@ -97,6 +97,7 @@ import {
   <Grid item sx={{ position: 'absolute', right: 16 }}>
     <Button
       variant="contained" 
+      sx={{borderRadius:2}}
       startIcon={<ArrowBackIcon />}
       onClick={onBackToList}
     >

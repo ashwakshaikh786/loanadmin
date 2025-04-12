@@ -28,7 +28,7 @@ const UserManager = () => {
       {!showForm ? (
         <>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="h5">User List</Typography>
+            <Typography variant="h5">Customer List</Typography>
             <Stack direction="row" spacing={1}>
               <TextField
                 size="small"

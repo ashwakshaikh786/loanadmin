@@ -26,6 +26,7 @@ const UserManager = () => {
         />
             <Button 
               variant="contained" 
+              sx={{borderRadius:2}}
               onClick={handleShowForm}
               startIcon={<AddIcon />}
             >

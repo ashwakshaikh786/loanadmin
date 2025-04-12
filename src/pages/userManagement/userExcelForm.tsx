@@ -63,23 +63,29 @@ import {
     return (
       <Stack alignItems="center" justifyContent="center" px={1} py={4}>
         <Paper sx={{ px: 4, py: 4, width: '100%', maxWidth: 600 }}>
-          <Grid container alignItems="center" sx={{ mb: 3, position: 'relative' ,justifyContent :"center"}}>
-            <Grid item xs={12}>
-              <Typography variant="h4" align="center">
-                Upload Users (Excel)
-              </Typography>
-            </Grid>
-            <Grid item sx={{ position: 'absolute', right: 16 }}>
-              <Button
-                variant="contained"
-                sx={{borderRadius:2}}
-                startIcon={<ArrowBackIcon />}
-                onClick={onBackToList}
-              >
-                Back to List
-              </Button>
-            </Grid>
-          </Grid>
+        <Grid
+  container
+  alignItems="center"
+  justifyContent="space-between"
+  sx={{ mb: 3, position: 'relative' }}
+>
+  <Grid item>
+    <Typography variant="h4" align="left">
+      Upload Customer 
+    </Typography>
+  </Grid>
+  <Grid item>
+    <Button
+      variant="contained"
+      sx={{ borderRadius: 2 }}
+      startIcon={<ArrowBackIcon />}
+      onClick={onBackToList}
+    >
+      Back to List
+    </Button>
+  </Grid>
+</Grid>
+
   
           <Divider sx={{ my: 2 }}>Upload Excel</Divider>
   

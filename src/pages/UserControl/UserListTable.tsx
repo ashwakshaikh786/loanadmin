@@ -6,6 +6,10 @@ import DataGridFooter from 'components/common/DataGridFooter';
 import ActionMenu from 'components/sections/dashboard/transaction-history/ActionMenu';
 import BASE_URL from '../../config';
 
+import {
+  Paper, 
+  Stack,
+} from '@mui/material';
 
 interface User {
   _id: number;
@@ -24,11 +28,11 @@ interface UserListTableProps {
 }
 
 const columns: GridColDef<User>[] = [
-    {
-        field: 'id',
-        headerName: 'Sr. No',
-        width: 100,
-      },
+  {
+    field: 'id',
+    headerName: 'Sr. No',
+    width: 100,
+  },
   {
     field: 'first_name',
     headerName: 'First Name',
@@ -120,23 +124,28 @@ const UserListTable = ({ searchText }: UserListTableProps) => {
   }, [searchText]);
 
   return (
-    <DataGrid
-    apiRef={apiRef}
-    density="standard"
-    columns={columns}
-    rows={users}
-    rowHeight={52}
-    disableColumnMenu
-    disableColumnSelector
-    disableRowSelectionOnClick
-    initialState={{
-      pagination: { paginationModel: { pageSize: 5 } },
-    }}
-    slots={{ pagination: DataGridFooter }}
-    pageSizeOptions={[5]}
-    autoHeight  // ✅ Add this line
-  />
-  
+    <>
+      <Stack alignItems="center" justifyContent="center" >
+        <Paper sx={{ width: '100%' }}>
+          <DataGrid
+            apiRef={apiRef}
+            density="standard"
+            columns={columns}
+            rows={users}
+            rowHeight={52}
+            disableColumnMenu
+            disableColumnSelector
+            disableRowSelectionOnClick
+            initialState={{
+              pagination: { paginationModel: { pageSize: 5 } },
+            }}
+            slots={{ pagination: DataGridFooter }}
+            pageSizeOptions={[5]}
+            autoHeight  // ✅ Add this line
+          />
+        </Paper>
+      </Stack>
+    </>
   );
 };
 
