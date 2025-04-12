@@ -1,151 +1,197 @@
-
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import Chip from '@mui/material/Chip';
-import { DataGrid, GridColDef, useGridApiRef, GridApi } from '@mui/x-data-grid';
-import DataGridFooter from 'components/common/DataGridFooter';
-import ActionMenu from 'components/sections/dashboard/transaction-history/ActionMenu';
-import BASE_URL from '../../config';
-
+import { useEffect, useState, ChangeEvent } from 'react';
 import {
-    Paper,
-    Stack,
-  } from '@mui/material';
+  Paper,
+  Stack,
+  Typography,
+  Button,
+  Checkbox,
+  TextField,
+  Grid,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
+import axios from 'axios';
+import BASE_URL from '../../config';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 interface User {
   _id: number;
   first_name: string;
   last_name: string;
   mobile: string;
-  email: string;
-  address: string;
-  username: string;
-  role_name: string;
-  dob: string;
+  created_date: string;
 }
 
-interface UserListTableProps {
-  searchText: string;
+interface Agent {
+  id: number;
+  name: string;
 }
 
-const columns: GridColDef<User>[] = [
-    {
-        field: 'id',
-        headerName: 'Sr. No',
-        width: 100,
-      },
-  {
-    field: 'first_name',
-    headerName: 'First Name',
-    flex: 1.5,
-    minWidth: 140,
-  },
-  {
-    field: 'last_name',
-    headerName: 'Last Name',
-    flex: 1.5,
-    minWidth: 140,
-  },
-  {
-    field: 'mobile',
-    headerName: 'Mobile',
-    flex: 1.5,
-    minWidth: 140,
-  },
-  {
-    field: 'email',
-    headerName: 'Email',
-    flex: 2,
-    minWidth: 200,
-  },
-  {
-    field: 'address',
-    headerName: 'Address',
-    flex: 2,
-    minWidth: 200,
-  },
-  {
-    field: 'username',
-    headerName: 'Username',
-    flex: 1.5,
-    minWidth: 140,
-  },
-  {
-    field: 'role_name',
-    headerName: 'Role',
-    flex: 1.5,
-    minWidth: 140,
-    renderCell: (params) => (
-      <Chip label={params.value} color="primary" size="small" />
-    ),
-  },
-  {
-    field: 'dob',
-    headerName: 'DOB',
-    flex: 1.5,
-    minWidth: 140,
-  },
-  {
-    field: 'action',
-    headerAlign: 'right',
-    align: 'right',
-    flex: 1,
-    minWidth: 100,
-    sortable: false,
-    renderHeader: () => <ActionMenu />,
-    renderCell: () => <ActionMenu />,
-  },
-];
-
-const UserListTable = ({ searchText }: UserListTableProps) => {
-  const apiRef = useGridApiRef<GridApi>();
+const CustomerAssignList = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
+  const [selectCount, setSelectCount] = useState<number>(0);
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
+  const [filterText, setFilterText] = useState<string>('');
 
+  // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/user/userfetch`);
-        const fetchedUsers = res.data.data.map((user: User, index: number) => ({
-          id: index + 1,
-          ...user,
-        }));
-        setUsers(fetchedUsers);
+        const res = await axios.get(`${BASE_URL}/api/user/fetchexcel`);
+        setUsers(res.data.data);
+        setFilteredUsers(res.data.data);
       } catch (error) {
         console.error('Failed to fetch users:', error);
       }
     };
-
     fetchUsers();
   }, []);
 
+  // Fetch agents
   useEffect(() => {
-    apiRef.current.setQuickFilterValues(
-      searchText.split(/\b\W+\b/).filter((word) => word !== '')
+    const fetchAgents = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/user/fetchagent`);
+        setAgents(res.data.data);
+      } catch (error) {
+        console.error('Failed to fetch agents:', error);
+      }
+    };
+    fetchAgents();
+  }, []);
+
+  // Handle checkbox
+  const handleCheckboxChange = (id: number) => {
+    setSelectedUserIds((prev) =>
+      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
     );
-  }, [searchText]);
+  };
+
+  // Handle count input change
+  const handleSelectCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const count = Number(e.target.value);
+    setSelectCount(count);
+    const autoSelectIds = filteredUsers.slice(0, count).map((user) => user._id);
+    setSelectedUserIds(autoSelectIds);
+  };
+
+  // Handle agent change
+  const handleAgentChange = (e: SelectChangeEvent) => {
+    setSelectedAgent(Number(e.target.value));
+  };
+
+  // Handle search filter
+  useEffect(() => {
+    const lowerText = filterText.toLowerCase();
+    const filtered = users.filter(
+      (user) =>
+        `${user.first_name} ${user.last_name}`.toLowerCase().includes(lowerText) ||
+        user.mobile.toLowerCase().includes(lowerText) ||
+        user.created_date?.toLowerCase().includes(lowerText)
+    );
+    setFilteredUsers(filtered);
+  }, [filterText, users]);
+
+  // Submit handler
+  const handleSubmit = async () => {
+    const selectedUsers = users.filter((user) =>
+      selectedUserIds.includes(user._id)
+    );
+
+    if (!selectedAgent) return alert('Please select an agent');
+
+    try {
+      const res = await axios.post(`${BASE_URL}/api/user/assign`, {
+        users: selectedUsers,
+        agentId: selectedAgent,
+      });
+
+      if (res.data.success) alert('Users assigned successfully!');
+      else alert('Assignment failed');
+    } catch (error) {
+      console.error('Submit failed:', error);
+    }
+  };
 
   return (
-    <Stack alignItems="center" justifyContent="center" >
-        <Paper sx={{ width: '100%'}}>
-    <DataGrid
-    apiRef={apiRef}
-    density="standard"
-    columns={columns}
-    rows={users}
-    rowHeight={52}
-    disableColumnMenu
-    disableColumnSelector
-    disableRowSelectionOnClick
-    initialState={{
-      pagination: { paginationModel: { pageSize: 5 } },
-    }}
-    slots={{ pagination: DataGridFooter }}
-    pageSizeOptions={[5]}
-    autoHeight  // ✅ Add this line
-  />
-  </Paper>
-  </Stack>
+    <Stack alignItems="center" px={1} py={4}>
+      <Paper sx={{ px: 4, py: 4, width: '100%', maxWidth: 1000 }}>
+        <Typography variant="h5" gutterBottom>
+          Assign Customers to Agent
+        </Typography>
+
+        <Grid container spacing={2} alignItems="center" mb={3}>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="Filter by name, number or date"
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <TextField
+              type="number"
+              label="Auto-select count"
+              value={selectCount}
+              onChange={handleSelectCountChange}
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              <InputLabel>Select Agent</InputLabel>
+              <Select value={selectedAgent ?? ''} onChange={handleAgentChange} label="Select Agent">
+                {agents.map((agent) => (
+                  <MenuItem key={agent.id} value={agent.id}>
+                    {agent.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          {filteredUsers.map((user) => (
+            <Grid
+              item
+              xs={12}
+              key={user._id}
+              sx={{ borderBottom: '1px solid #eee', pb: 1 }}
+            >
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Checkbox
+                  checked={selectedUserIds.includes(user._id)}
+                  onChange={() => handleCheckboxChange(user._id)}
+                />
+                <Typography>
+                  {user.first_name} {user.last_name} — {user.mobile} — {user.created_date}
+                </Typography>
+              </Stack>
+            </Grid>
+          ))}
+        </Grid>
+
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleSubmit}
+          sx={{ mt: 3 }}
+        >
+          Submit Selected
+        </Button>
+      </Paper>
+    </Stack>
   );
 };
 
-export default UserListTable;
+export default CustomerAssignList;

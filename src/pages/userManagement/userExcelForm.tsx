@@ -1,4 +1,3 @@
-
 import {
     Button,
     Paper,
@@ -6,51 +5,66 @@ import {
     Stack,
     Grid,
     Divider,
+    TextField,
+    IconButton,
   } from '@mui/material';
-  import { useState, ChangeEvent, FormEvent } from 'react';
+  import { useState, FormEvent } from 'react';
   import Swal from 'sweetalert2';
   import axios from 'axios';
   import BASE_URL from '../../config';
   import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+  import AddCircleIcon from '@mui/icons-material/AddCircle';
+  import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
   
   type RegisterProps = {
     onBackToList: () => void;
   };
   
-  const Excelform = ({ onBackToList }: RegisterProps) => {
-    const [excelFile, setExcelFile] = useState<File | null>(null);
+  type Customer = {
+    name: string;
+    mobile: string;
+  };
   
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files && e.target.files.length > 0) {
-        setExcelFile(e.target.files[0]);
+  const ManualCustomerForm = ({ onBackToList }: RegisterProps) => {
+    const [customers, setCustomers] = useState<Customer[]>([
+      { name: '', mobile: '' },
+    ]);
+  
+    const handleChange = (index: number, field: keyof Customer, value: string) => {
+      const updated = [...customers];
+      updated[index][field] = value;
+      setCustomers(updated);
+    };
+  
+    const handleAddRow = () => {
+      setCustomers([...customers, { name: '', mobile: '' }]);
+    };
+  
+    const handleRemoveRow = (index: number) => {
+      if (customers.length > 1) {
+        const updated = customers.filter((_, i) => i !== index);
+        setCustomers(updated);
       }
     };
   
-    const handleUpload = async (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
       e.preventDefault();
   
-      if (!excelFile) {
-        Swal.fire('Error', 'Please select an Excel file to upload', 'error');
+      const invalid = customers.some(
+        (cust) => !cust.name.trim() || !cust.mobile.trim()
+      );
+  
+      if (invalid) {
+        Swal.fire('Error', 'Please fill in all name and mobile fields', 'error');
         return;
       }
   
-      const formData = new FormData();
-      formData.append('excelFile', excelFile);
-  
       try {
-        const response = await axios.post(
-          `${BASE_URL}/api/upload/uploadexcel`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
-        );
+        const response = await axios.post(`${BASE_URL}/api/upload/uploadsingleexcel`, customers);
   
         if (response.data.success) {
-          Swal.fire('Success!', 'File uploaded successfully!', 'success');
-          setExcelFile(null); // reset file
+          Swal.fire('Success!', 'Customers added successfully!', 'success');
+          setCustomers([{ name: '', mobile: '' }]); // Reset form
         } else {
           Swal.fire('Error', response.data.message || 'Upload failed', 'error');
         }
@@ -63,42 +77,60 @@ import {
     return (
       <Stack alignItems="center" justifyContent="center" px={1} py={4}>
         <Paper sx={{ px: 4, py: 4, width: '100%', maxWidth: 600 }}>
-        <Grid
-  container
-  alignItems="center"
-  justifyContent="space-between"
-  sx={{ mb: 3, position: 'relative' }}
->
-  <Grid item>
-    <Typography variant="h4" align="left">
-      Upload Customer 
-    </Typography>
-  </Grid>
-  <Grid item>
-    <Button
-      variant="contained"
-      sx={{ borderRadius: 2 }}
-      startIcon={<ArrowBackIcon />}
-      onClick={onBackToList}
-    >
-      Back to List
-    </Button>
-  </Grid>
-</Grid>
-
+          <Grid container alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+            <Typography variant="h4">Add Multiple Customers</Typography>
+            <Button
+              variant="contained"
+              sx={{ borderRadius: 2 }}
+              startIcon={<ArrowBackIcon />}
+              onClick={onBackToList}
+            >
+              Back to List
+            </Button>
+          </Grid>
   
-          <Divider sx={{ my: 2 }}>Upload Excel</Divider>
+          <Divider sx={{ my: 2 }}>Customer Details</Divider>
   
-          <form onSubmit={handleUpload} encType="multipart/form-data">
-            <input
-              type="file"
-              accept=".xlsx, .xls"
-              onChange={handleFileChange}
-              required
-            />
+          <form onSubmit={handleSubmit}>
+            {customers.map((customer, index) => (
+              <Grid container spacing={2} key={index} alignItems="center" sx={{ mb: 1 }}>
+                <Grid item xs={5}>
+                  <TextField
+                    label="Name"
+                    variant="outlined"
+                    fullWidth
+                    value={customer.name}
+                    onChange={(e) => handleChange(index, 'name', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={5}>
+                  <TextField
+                    label="Mobile"
+                    variant="outlined"
+                    fullWidth
+                    value={customer.mobile}
+                    onChange={(e) => handleChange(index, 'mobile', e.target.value)}
+                    required
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <Stack direction="row" spacing={1}>
+                    <IconButton color="primary" onClick={handleAddRow}>
+                      <AddCircleIcon />
+                    </IconButton>
+                    {customers.length > 1 && (
+                      <IconButton color="error" onClick={() => handleRemoveRow(index)}>
+                        <RemoveCircleOutlineIcon />
+                      </IconButton>
+                    )}
+                  </Stack>
+                </Grid>
+              </Grid>
+            ))}
   
             <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
-              Upload
+              Submit All
             </Button>
           </form>
         </Paper>
@@ -106,5 +138,5 @@ import {
     );
   };
   
-  export default Excelform;
+  export default ManualCustomerForm;
   

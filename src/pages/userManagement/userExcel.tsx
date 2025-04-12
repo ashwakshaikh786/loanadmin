@@ -55,7 +55,7 @@ const UserManager = () => {
               </Button>
             </Stack>
           </Stack>
-          <UserListTable searchText={searchText} />
+          <UserListTable  />
         </>
       ) : (
         isBulk ? (
