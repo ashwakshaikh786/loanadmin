@@ -66,30 +66,30 @@ const sitemap: MenuItem[] = [
     path: '#!',
     icon: 'material-symbols:local-library-outline',
   },
-  {
-    id: 'authentication',
-    subheader: 'Authentication',
-    icon: 'ic:round-security',
-    active: true,
-    items: [
-      {
-        name: 'Sign In',
-        pathName: 'signin',
-        path: paths.signin,
-      },
-      {
-        name: 'Sign Up',
-        pathName: 'signup',
-        path: paths.signup,
-      },
+  // {
+  //   id: 'authentication',
+  //   subheader: 'Authentication',
+  //   icon: 'ic:round-security',
+  //   active: true,
+  //   items: [
+  //     {
+  //       name: 'Sign In',
+  //       pathName: 'signin',
+  //       path: paths.signin,
+  //     },
+  //     {
+  //       name: 'Sign Up',
+  //       pathName: 'signup',
+  //       path: paths.signup,
+  //     },
 
-      {
-        name: 'Logout',
-        pathName: 'logout',
-        path: paths.logout,
-      },
-    ],
-  },
+  //     {
+  //       name: 'Logout',
+  //       pathName: 'logout',
+  //       path: paths.logout,
+  //     },
+  //   ],
+  // },
   {
     id: 'schedules',
     subheader: 'Schedules',

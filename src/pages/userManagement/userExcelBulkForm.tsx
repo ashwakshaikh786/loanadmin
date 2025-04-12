@@ -66,7 +66,7 @@ import {
           <Grid container alignItems="center" sx={{ mb: 3, position: 'relative' ,justifyContent :"center"}}>
             <Grid item xs={12}>
               <Typography variant="h4" align="center">
-                Upload Users (Excel)
+                Upload Bulk 
               </Typography>
             </Grid>
             <Grid item sx={{ position: 'absolute', right: 16 }}>
