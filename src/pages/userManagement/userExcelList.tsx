@@ -18,12 +18,15 @@ import {
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import axios from 'axios';
 import BASE_URL from '../../config';
-
+import Swal from 'sweetalert2';
 interface Customer {
   id: number;
   customer_id: number;
   name: string;
-  Proccess:string;
+  Proccess: string;
+  loanamount:string;
+  city:string;
+  pincode :string;
   mobile: string;
   created_at?: string;
 }
@@ -39,7 +42,7 @@ const UserExcelList: React.FC = () => {
   
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState<GridRowSelectionModel>([]);
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState<number[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<string>('');
   const [loading, setLoading] = useState({
@@ -57,29 +60,47 @@ const UserExcelList: React.FC = () => {
   const [manualCount, setManualCount] = useState<number>(0);
   const [isManualSelection, setIsManualSelection] = useState(false);
 
-  useEffect(() => {
-    axios.get(`${BASE_URL}/api/upload/fetchexcel`)
-      .then((res) => {
-        const data = (res.data?.data || []).map((user: Customer, index: number) => ({
-          id: index + 1,
-          customer_id: user.customer_id,
-          name: user.name || '',
-          mobile: user.mobile || '',
-          Proccess: user.Proccess ? user.Proccess = "Assined" :"Pending",
-          created_at: user.created_at || '',
-        }));
-        setCustomers(data);
-        setFilteredCustomers(data);
-      })
-      .catch(() => setError(prev => ({ ...prev, customers: true })))
-      .finally(() => setLoading(prev => ({ ...prev, customers: false })));
+  const fetchCustomers = async () => {
+    setLoading(prev => ({ ...prev, customers: true }));
+    try {
+      const res = await axios.get(`${BASE_URL}/api/upload/fetchexcel`);
+      const data = (res.data?.data || []).map((user: Customer, index: number) => ({
+        id: index + 1,
+        customer_id: user.customer_id,
+        name: user.name || '--',
+        mobile: user.mobile || '--',
+        Proccess: user.Proccess ? "Assigned" : "Pending",
+        created_at: user.created_at || '--',
+        loanamount:user.loanamount || '--',
+        city:user.city || '--',
+        pincode :user.pincode || '--',
+      }));
+      setCustomers(data);
+      setFilteredCustomers(data);
+      setError(prev => ({ ...prev, customers: false }));
+    } catch (error) {
+      setError(prev => ({ ...prev, customers: true }));
+    } finally {
+      setLoading(prev => ({ ...prev, customers: false }));
+    }
+  };
 
-    axios.get(`${BASE_URL}/api/user/agentroles`)
-      .then((res) => {
-        setAgents(res.data?.data || []);
-      })
-      .catch(() => setError(prev => ({ ...prev, agents: true })))
-      .finally(() => setLoading(prev => ({ ...prev, agents: false })));
+  const fetchAgents = async () => {
+    setLoading(prev => ({ ...prev, agents: true }));
+    try {
+      const res = await axios.get(`${BASE_URL}/api/user/agentroles`);
+      setAgents(res.data?.data || []);
+      setError(prev => ({ ...prev, agents: false }));
+    } catch (error) {
+      setError(prev => ({ ...prev, agents: true }));
+    } finally {
+      setLoading(prev => ({ ...prev, agents: false }));
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+    fetchAgents();
   }, []);
 
   useEffect(() => {
@@ -115,43 +136,98 @@ const UserExcelList: React.FC = () => {
   };
 
   const handleSelectionChange = (newSelection: GridRowSelectionModel) => {
-    setSelectedCustomerIds(newSelection);
+    setSelectedCustomerIds(newSelection as number[]);
     setManualCount(newSelection.length);
     setIsManualSelection(true);
   };
 
-  const handleSubmit = () => {
-    const selectedCustomers = filteredCustomers.filter((customer) =>
-      selectedCustomerIds.includes(customer.customer_id)
-    );
-    console.log('Selected Customers:', selectedCustomers);
-    console.log('Selected Agent ID:', selectedAgent);
-    
-    selectedCustomers.forEach(customer => {
-        axios.post(`${BASE_URL}/api/assign/assigncustomer`, {
-          customer_id: customer.customer_id,
-          user_id: selectedAgent,
-          name: customer.name,
-          mobile: customer.mobile
-        });
+  const handleSubmit = async () => {
+    if (selectedCustomerIds.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No Customers Selected',
+        text: 'Please select at least one customer to assign',
       });
-      
-    };
+      return;
+    }
+
+    if (!selectedAgent) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No Agent Selected',
+        text: 'Please select an agent to assign customers to',
+      });
+      return;
+    }
+
+    try {
+      const selectedCustomers = filteredCustomers.filter((customer) =>
+        selectedCustomerIds.includes(customer.id)
+      );
+
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: `You are about to assign ${selectedCustomers.length} customers to the selected agent.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, assign them!'
+      });
+
+      if (result.isConfirmed) {
+        // Process all assignments
+        const assignmentPromises = selectedCustomers.map(customer => 
+          axios.post(`${BASE_URL}/api/assign/assigncustomer`, {
+            customer_id: customer.customer_id,
+            user_id: selectedAgent,
+            name: customer.name,
+            mobile: customer.mobile
+          })
+        );
+
+        await Promise.all(assignmentPromises);
+
+        // Show success message
+        await Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: `${selectedCustomers.length} customers have been assigned successfully.`,
+        });
+
+        // Refetch the latest data
+        await fetchCustomers();
+
+        // Clear selection
+        setSelectedCustomerIds([]);
+        setManualCount(0);
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Assignment Failed',
+        text: 'There was an error assigning customers. Please try again.',
+      });
+      console.error('Error assigning customers:', error);
+    }
+  };
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'Sr. No', width: 90 },
-    { field: 'name', headerName: 'Name', flex: 1, minWidth: 150 },
+    { field: 'name', headerName: 'Name', flex: 1, minWidth: 90 },
     { field: 'Proccess', headerName: 'Assign Status', flex: 1, minWidth: 90 },
-    { field: 'mobile', headerName: 'Mobile', flex: 1, minWidth: 120 },
+    { field: 'mobile', headerName: 'Mobile', flex: 1, minWidth: 90 },
+    { field: 'loanamount', headerName: 'Loan amount (Previous)', flex: 1, minWidth: 200 },
+    { field: 'city', headerName: 'City', flex: 1, minWidth: 90 },
+    { field: 'pincode', headerName: 'Pincode', flex: 1, minWidth: 90 },
     { 
       field: 'created_at', 
       headerName: 'Created Date', 
       flex: 1,
-      minWidth: 150,
-      // Hide on small screens
+      minWidth: 120,
       hide: isSmallScreen,
     } as GridColDef,
-   
   ];
 
   if (loading.customers || loading.agents) {
@@ -180,13 +256,16 @@ const UserExcelList: React.FC = () => {
       >
         <TextField
           label="Filter by Name"
+           variant="outlined"
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
           size={isSmallScreen ? 'small' : 'medium'}
           fullWidth={isSmallScreen}
+          
         />
         <TextField
           label="Filter by Mobile"
+           variant="outlined"
           value={filterMobile}
           onChange={(e) => setFilterMobile(e.target.value)}
           size={isSmallScreen ? 'small' : 'medium'}
@@ -194,6 +273,7 @@ const UserExcelList: React.FC = () => {
         />
         <TextField
           label="Filter by Date"
+           variant="outlined"
           placeholder="YYYY-MM-DD"
           value={filterDate}
           onChange={(e) => setFilterDate(e.target.value)}
@@ -202,6 +282,7 @@ const UserExcelList: React.FC = () => {
         />
         <TextField
           label="Select Count"
+           variant="outlined"
           type="number"
           value={manualCount}
           onChange={handleManualCountChange}
@@ -212,21 +293,35 @@ const UserExcelList: React.FC = () => {
           size={isSmallScreen ? 'small' : 'medium'}
           fullWidth={isSmallScreen}
         />
-        <FormControl sx={{ minWidth: isSmallScreen ? '100%' : 200 }} size={isSmallScreen ? 'small' : 'medium'}>
-          <InputLabel>Select Agent</InputLabel>
-          <Select
-            value={selectedAgent}
-            onChange={handleAgentChange}
-            label="Select Agent"
-            fullWidth={isSmallScreen}
-          >
-            {agents.map((agent) => (
-              <MenuItem key={agent.user_id} value={agent.user_id.toString()}>
-                {agent.username}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+ <FormControl
+  fullWidth={isSmallScreen}
+  size={isSmallScreen ? 'small' : 'medium'}
+  variant="outlined"
+  sx={{ minWidth: isSmallScreen ? '100%' : 200 }}
+>
+  <InputLabel id="select-agent-label" sx={{top:"-4px"}}>Select Agent</InputLabel>
+  <Select
+    labelId="select-agent-label"
+    id="select-agent"
+    value={selectedAgent}
+    onChange={handleAgentChange}
+    label="Select Agent"
+    sx={{
+      // Optional: Adjust vertical padding slightly
+      '& .MuiSelect-select': {
+        py: 1.25, // or 1.25 depending on size
+      },
+    }}
+  >
+    {agents.map((agent) => (
+      <MenuItem key={agent.user_id} value={agent.user_id.toString()}>
+        {agent.username}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+
         <Button 
           variant="contained" 
           onClick={handleSubmit} 
@@ -250,27 +345,29 @@ const UserExcelList: React.FC = () => {
         width: '100%'
       }}>
         <Stack alignItems="center" justifyContent="center" >
-        <Paper sx={{ width: '100%' }}>
-        <DataGrid
-          rows={filteredCustomers}
-          columns={columns}
-          checkboxSelection
-          disableRowSelectionOnClick
-          onRowSelectionModelChange={handleSelectionChange}
-          rowSelectionModel={selectedCustomerIds}
-          initialState={{
-            pagination: {
-              paginationModel: { 
-                pageSize: isSmallScreen ? 5 : isMediumScreen ? 10 : 20,
-                page: 0 
-              },
-            },
-          }}
-          pageSizeOptions={[5, 10, 20]}
-          density={isSmallScreen ? 'compact' : 'standard'}
-        />
-
-        </Paper>
+          <Paper sx={{ width: '100%' }}>
+            <DataGrid
+              rows={filteredCustomers}
+          
+              columns={columns}
+              checkboxSelection
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={handleSelectionChange}
+              rowSelectionModel={selectedCustomerIds}
+              initialState={{
+                pagination: {
+                  paginationModel: { 
+                    pageSize: isSmallScreen ? 5 : isMediumScreen ? 10 : 20,
+                    page: 0 
+                  },
+                },
+              }}
+              pageSizeOptions={[5, 10, 20 ,50 ,100]}
+              density={isSmallScreen ? 'compact' : 'standard'}
+           
+              autoHeight  
+            />
+          </Paper>
         </Stack>
       </Box>
     </Box>

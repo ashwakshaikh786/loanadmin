@@ -2,11 +2,13 @@ export const rootPaths = {
   root: '/',
   pageRoot: 'pages',
   authRoot: 'auth',
+  teleRoot:'telecaller',
   errorRoot: 'error',
 };
 
 export default {
   dashboard: `/${rootPaths.pageRoot}/dashboard`,
+  teledashboard :  `/${rootPaths.teleRoot}/dashboard`,
   activity: `/${rootPaths.pageRoot}/activity`,
   library: `/${rootPaths.pageRoot}/library`,
   schedules: `/${rootPaths.pageRoot}/schedules`,

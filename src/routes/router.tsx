@@ -5,6 +5,7 @@ import { Outlet, createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from 'layouts/main-layout';
 import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
+import TeleLayout from 'layouts/telecaller-layout';
 import AuthLayout from 'layouts/auth-layout';
 // import { Logout } from '@mui/icons-material';
 
@@ -17,7 +18,7 @@ const Test = lazy(() => import('pages/test/test'));
 const Admin = lazy(() => import('pages/test/admin'));
 const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
 const Usercontrol = lazy(() => import('pages/userManagement/userExcel'));
-
+const Teledashboard =  lazy(() => import('pages/telecaller/Dasboard'));
 
 const router = createBrowserRouter(
   [
@@ -46,6 +47,22 @@ const router = createBrowserRouter(
             {
               index: true,
               element: <Dashboard />,
+            },
+          ],
+        },
+        {
+          path: paths.teledashboard,
+          element: (
+            <TeleLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </TeleLayout>
+          ),
+          children: [
+            {
+              index: true,
+              element: <Teledashboard />,
             },
           ],
         },{

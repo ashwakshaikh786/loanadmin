@@ -111,6 +111,7 @@ import {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
+                label="First name"
                   name="first_name"
                   placeholder="First Name"
                   variant="outlined"
@@ -123,6 +124,7 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Last name"
                   name="last_name"
                   placeholder="Last Name"
                   variant="outlined"
@@ -135,6 +137,7 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Mobile no."
                   name="mobile"
                   placeholder="Mobile"
                   variant="outlined"
@@ -147,6 +150,7 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Email address"
                   name="email"
                   placeholder="Email"
                   type="email"
@@ -161,6 +165,7 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Username"
                   name="username"
                   placeholder="Username"
                   variant="outlined"
@@ -173,9 +178,10 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Password"
                   name="password"
                   placeholder="Password"
-                  type="password"
+                  type="text"
                   variant="outlined"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -186,6 +192,7 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                label="Role"
                   select
                   name="role_id"
                   value={formData.role_id}
@@ -208,6 +215,7 @@ import {
   
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Date of Birth"
                   name="dob"
                   placeholder="Date of Birth"
                   type="date"
@@ -221,6 +229,7 @@ import {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                   label="Address"
                   name="address"
                   placeholder="Address"
                   variant="outlined"

@@ -7,8 +7,7 @@ import {
   TextField,
   useTheme,
   useMediaQuery,
-  IconButton,
-  Tooltip
+  IconButton
 } from '@mui/material';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -91,24 +90,35 @@ const UserManager = () => {
 
               {isSmallScreen ? (
                 <>
-                  <Tooltip title="Add Single">
-                    <IconButton 
-                      color="primary" 
-                      onClick={() => handleShowForm(false)}
-                      sx={{ bgcolor: 'primary.main', color: 'white' }}
-                    >
-                      <PersonAddIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Add Bulk">
-                    <IconButton 
-                      color="primary" 
-                      onClick={() => handleShowForm(true)}
-                      sx={{ bgcolor: 'primary.main', color: 'white' }}
-                    >
-                      <GroupAddIcon />
-                    </IconButton>
-                  </Tooltip>
+                  
+                  <Button 
+              variant="contained" 
+              sx={{
+                borderRadius: 2,
+                order: isSmallScreen ? 1 : 0,  // Move to top on small screens
+                width: isSmallScreen ? '100%' : 'auto',
+                ml: isSmallScreen ? 0 : 'auto'  // Auto margin left on larger screens
+              }}
+              onClick={() => handleShowForm(false)}
+              startIcon={<PersonAddIcon />}
+              fullWidth={isSmallScreen}
+            >  {isSmallScreen ? 'Add Single' : 'Add Single'}
+                     </Button>
+                    
+           
+                     <Button 
+              variant="contained" 
+              sx={{
+                borderRadius: 2,
+                order: isSmallScreen ? 1 : 0,  // Move to top on small screens
+                width: isSmallScreen ? '100%' : 'auto',
+                ml: isSmallScreen ? 0 : 'auto'  // Auto margin left on larger screens
+              }}
+              onClick={() => handleShowForm(false)}
+              startIcon={<GroupAddIcon />}
+              fullWidth={isSmallScreen}
+            >  {isSmallScreen ? 'Add Single' : 'Add Single'}
+                     </Button>
                 </>
               ) : (
                 <>

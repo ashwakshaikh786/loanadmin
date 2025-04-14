@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Chip from '@mui/material/Chip';
 import { DataGrid, GridColDef, useGridApiRef, GridApi } from '@mui/x-data-grid';
-import DataGridFooter from 'components/common/DataGridFooter';
 import ActionMenu from 'components/sections/dashboard/transaction-history/ActionMenu';
 import BASE_URL from '../../config';
 
@@ -136,11 +135,8 @@ const UserListTable = ({ searchText }: UserListTableProps) => {
             disableColumnMenu
             disableColumnSelector
             disableRowSelectionOnClick
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5 } },
-            }}
-            slots={{ pagination: DataGridFooter }}
-            pageSizeOptions={[5]}
+      
+            pageSizeOptions={[5 ,10,20,50]}
             autoHeight  // ✅ Add this line
           />
         </Paper>
