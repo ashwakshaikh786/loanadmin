@@ -1,197 +1,280 @@
-import { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Paper,
-  Stack,
-  Typography,
+  Box,
   Button,
-  Checkbox,
-  TextField,
-  Grid,
+  CircularProgress,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
-  InputLabel,
-  FormControl,
+  SelectChangeEvent,
+  Stack,
+  TextField,
+  Paper,
+  Typography,
+  useMediaQuery,
+  Theme,
 } from '@mui/material';
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import axios from 'axios';
 import BASE_URL from '../../config';
-import { SelectChangeEvent } from '@mui/material/Select';
 
-interface User {
-  _id: number;
-  first_name: string;
-  last_name: string;
+interface Customer {
+  id: number;
+  customer_id: number;
+  name: string;
+  Proccess:string;
   mobile: string;
-  created_date: string;
+  created_at?: string;
 }
 
 interface Agent {
-  id: number;
-  name: string;
+  user_id: number;
+  username: string;
 }
 
-const CustomerAssignList = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
-  const [selectCount, setSelectCount] = useState<number>(0);
+const UserExcelList: React.FC = () => {
+  const isSmallScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
+  const isMediumScreen = useMediaQuery((theme: Theme) => theme.breakpoints.between('sm', 'md'));
+  
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState<GridRowSelectionModel>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
-  const [selectedAgent, setSelectedAgent] = useState<number | null>(null);
-  const [filterText, setFilterText] = useState<string>('');
+  const [selectedAgent, setSelectedAgent] = useState<string>('');
+  const [loading, setLoading] = useState({
+    customers: true,
+    agents: true,
+  });
+  const [error, setError] = useState({
+    customers: false,
+    agents: false,
+  });
 
-  // Fetch users
+  const [filterText, setFilterText] = useState('');
+  const [filterMobile, setFilterMobile] = useState('');
+  const [filterDate, setFilterDate] = useState('');
+  const [manualCount, setManualCount] = useState<number>(0);
+  const [isManualSelection, setIsManualSelection] = useState(false);
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/user/fetchexcel`);
-        setUsers(res.data.data);
-        setFilteredUsers(res.data.data);
-      } catch (error) {
-        console.error('Failed to fetch users:', error);
-      }
-    };
-    fetchUsers();
+    axios.get(`${BASE_URL}/api/upload/fetchexcel`)
+      .then((res) => {
+        const data = (res.data?.data || []).map((user: Customer, index: number) => ({
+          id: index + 1,
+          customer_id: user.customer_id,
+          name: user.name || '',
+          mobile: user.mobile || '',
+          Proccess: user.Proccess ? user.Proccess = "Assined" :"Pending",
+          created_at: user.created_at || '',
+        }));
+        setCustomers(data);
+        setFilteredCustomers(data);
+      })
+      .catch(() => setError(prev => ({ ...prev, customers: true })))
+      .finally(() => setLoading(prev => ({ ...prev, customers: false })));
+
+    axios.get(`${BASE_URL}/api/user/agentroles`)
+      .then((res) => {
+        setAgents(res.data?.data || []);
+      })
+      .catch(() => setError(prev => ({ ...prev, agents: true })))
+      .finally(() => setLoading(prev => ({ ...prev, agents: false })));
   }, []);
 
-  // Fetch agents
   useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/api/user/fetchagent`);
-        setAgents(res.data.data);
-      } catch (error) {
-        console.error('Failed to fetch agents:', error);
-      }
-    };
-    fetchAgents();
-  }, []);
-
-  // Handle checkbox
-  const handleCheckboxChange = (id: number) => {
-    setSelectedUserIds((prev) =>
-      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
-    );
-  };
-
-  // Handle count input change
-  const handleSelectCountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const count = Number(e.target.value);
-    setSelectCount(count);
-    const autoSelectIds = filteredUsers.slice(0, count).map((user) => user._id);
-    setSelectedUserIds(autoSelectIds);
-  };
-
-  // Handle agent change
-  const handleAgentChange = (e: SelectChangeEvent) => {
-    setSelectedAgent(Number(e.target.value));
-  };
-
-  // Handle search filter
-  useEffect(() => {
-    const lowerText = filterText.toLowerCase();
-    const filtered = users.filter(
-      (user) =>
-        `${user.first_name} ${user.last_name}`.toLowerCase().includes(lowerText) ||
-        user.mobile.toLowerCase().includes(lowerText) ||
-        user.created_date?.toLowerCase().includes(lowerText)
-    );
-    setFilteredUsers(filtered);
-  }, [filterText, users]);
-
-  // Submit handler
-  const handleSubmit = async () => {
-    const selectedUsers = users.filter((user) =>
-      selectedUserIds.includes(user._id)
-    );
-
-    if (!selectedAgent) return alert('Please select an agent');
-
-    try {
-      const res = await axios.post(`${BASE_URL}/api/user/assign`, {
-        users: selectedUsers,
-        agentId: selectedAgent,
-      });
-
-      if (res.data.success) alert('Users assigned successfully!');
-      else alert('Assignment failed');
-    } catch (error) {
-      console.error('Submit failed:', error);
+    const filtered = customers.filter((customer) => {
+      const matchesName = customer.name.toLowerCase().includes(filterText.toLowerCase());
+      const matchesMobile = customer.mobile.includes(filterMobile);
+      const matchesDate = filterDate ? customer.created_at?.startsWith(filterDate) : true;
+      return matchesName && matchesMobile && matchesDate;
+    });
+    setFilteredCustomers(filtered);
+    
+    if (manualCount > filtered.length) {
+      setManualCount(filtered.length);
+      setIsManualSelection(false);
     }
+  }, [filterText, filterMobile, filterDate, customers]);
+
+  useEffect(() => {
+    if (!isManualSelection && manualCount > 0) {
+      const ids = filteredCustomers.slice(0, manualCount).map((customer) => customer.id);
+      setSelectedCustomerIds(ids);
+    }
+  }, [manualCount, filteredCustomers, isManualSelection]);
+
+  const handleAgentChange = (event: SelectChangeEvent) => {
+    setSelectedAgent(event.target.value);
   };
+
+  const handleManualCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Math.min(Number(e.target.value), filteredCustomers.length);
+    setManualCount(value);
+    setIsManualSelection(false);
+  };
+
+  const handleSelectionChange = (newSelection: GridRowSelectionModel) => {
+    setSelectedCustomerIds(newSelection);
+    setManualCount(newSelection.length);
+    setIsManualSelection(true);
+  };
+
+  const handleSubmit = () => {
+    const selectedCustomers = filteredCustomers.filter((customer) =>
+      selectedCustomerIds.includes(customer.customer_id)
+    );
+    console.log('Selected Customers:', selectedCustomers);
+    console.log('Selected Agent ID:', selectedAgent);
+    
+    selectedCustomers.forEach(customer => {
+        axios.post(`${BASE_URL}/api/assign/assigncustomer`, {
+          customer_id: customer.customer_id,
+          user_id: selectedAgent,
+          name: customer.name,
+          mobile: customer.mobile
+        });
+      });
+      
+    };
+
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'Sr. No', width: 90 },
+    { field: 'name', headerName: 'Name', flex: 1, minWidth: 150 },
+    { field: 'Proccess', headerName: 'Assign Status', flex: 1, minWidth: 90 },
+    { field: 'mobile', headerName: 'Mobile', flex: 1, minWidth: 120 },
+    { 
+      field: 'created_at', 
+      headerName: 'Created Date', 
+      flex: 1,
+      minWidth: 150,
+      // Hide on small screens
+      hide: isSmallScreen,
+    } as GridColDef,
+   
+  ];
+
+  if (loading.customers || loading.agents) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error.customers || error.agents) {
+    return (
+      <Box sx={{ p: 2 }}>
+        <Typography color="error">Error loading data. Please try again later.</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Stack alignItems="center" px={1} py={4}>
-      <Paper sx={{ px: 4, py: 4, width: '100%', maxWidth: 1000 }}>
-        <Typography variant="h5" gutterBottom>
-          Assign Customers to Agent
-        </Typography>
-
-        <Grid container spacing={2} alignItems="center" mb={3}>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Filter by name, number or date"
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <TextField
-              type="number"
-              label="Auto-select count"
-              value={selectCount}
-              onChange={handleSelectCountChange}
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
-            <FormControl fullWidth>
-              <InputLabel>Select Agent</InputLabel>
-              <Select value={selectedAgent ?? ''} onChange={handleAgentChange} label="Select Agent">
-                {agents.map((agent) => (
-                  <MenuItem key={agent.id} value={agent.id}>
-                    {agent.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2}>
-          {filteredUsers.map((user) => (
-            <Grid
-              item
-              xs={12}
-              key={user._id}
-              sx={{ borderBottom: '1px solid #eee', pb: 1 }}
-            >
-              <Stack direction="row" alignItems="center" spacing={2}>
-                <Checkbox
-                  checked={selectedUserIds.includes(user._id)}
-                  onChange={() => handleCheckboxChange(user._id)}
-                />
-                <Typography>
-                  {user.first_name} {user.last_name} — {user.mobile} — {user.created_date}
-                </Typography>
-              </Stack>
-            </Grid>
-          ))}
-        </Grid>
-
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleSubmit}
-          sx={{ mt: 3 }}
+    <Box sx={{ p: { xs: 1, sm: 2 } }}>
+      <Stack 
+        spacing={2} 
+        direction={isSmallScreen ? 'column' : 'row'} 
+        sx={{ mb: 2 }}
+        alignItems={isSmallScreen ? 'stretch' : 'flex-start'}
+      >
+        <TextField
+          label="Filter by Name"
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+          size={isSmallScreen ? 'small' : 'medium'}
+          fullWidth={isSmallScreen}
+        />
+        <TextField
+          label="Filter by Mobile"
+          value={filterMobile}
+          onChange={(e) => setFilterMobile(e.target.value)}
+          size={isSmallScreen ? 'small' : 'medium'}
+          fullWidth={isSmallScreen}
+        />
+        <TextField
+          label="Filter by Date"
+          placeholder="YYYY-MM-DD"
+          value={filterDate}
+          onChange={(e) => setFilterDate(e.target.value)}
+          size={isSmallScreen ? 'small' : 'medium'}
+          fullWidth={isSmallScreen}
+        />
+        <TextField
+          label="Select Count"
+          type="number"
+          value={manualCount}
+          onChange={handleManualCountChange}
+          inputProps={{ 
+            min: 0,
+            max: filteredCustomers.length
+          }}
+          size={isSmallScreen ? 'small' : 'medium'}
+          fullWidth={isSmallScreen}
+        />
+        <FormControl sx={{ minWidth: isSmallScreen ? '100%' : 200 }} size={isSmallScreen ? 'small' : 'medium'}>
+          <InputLabel>Select Agent</InputLabel>
+          <Select
+            value={selectedAgent}
+            onChange={handleAgentChange}
+            label="Select Agent"
+            fullWidth={isSmallScreen}
+          >
+            {agents.map((agent) => (
+              <MenuItem key={agent.user_id} value={agent.user_id.toString()}>
+                {agent.username}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button 
+          variant="contained" 
+          onClick={handleSubmit} 
+          disabled={!selectedAgent || selectedCustomerIds.length === 0}
+          size={isSmallScreen ? 'small' : 'medium'}
+          fullWidth={isSmallScreen}
+          sx={{ 
+            height: isSmallScreen ? '40px' : 'auto',
+            mt: isSmallScreen ? 1 : 0
+          }}
         >
-          Submit Selected
+          Submit
         </Button>
-      </Paper>
-    </Stack>
+      </Stack>
+      <Typography variant="subtitle1" sx={{ mb: 1 }}>
+        Selected: {selectedCustomerIds.length} of {filteredCustomers.length}
+      </Typography>
+      
+      <Box sx={{ 
+        height: isSmallScreen ? 400 : isMediumScreen ? 500 : 600,
+        width: '100%'
+      }}>
+        <Stack alignItems="center" justifyContent="center" >
+        <Paper sx={{ width: '100%' }}>
+        <DataGrid
+          rows={filteredCustomers}
+          columns={columns}
+          checkboxSelection
+          disableRowSelectionOnClick
+          onRowSelectionModelChange={handleSelectionChange}
+          rowSelectionModel={selectedCustomerIds}
+          initialState={{
+            pagination: {
+              paginationModel: { 
+                pageSize: isSmallScreen ? 5 : isMediumScreen ? 10 : 20,
+                page: 0 
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10, 20]}
+          density={isSmallScreen ? 'compact' : 'standard'}
+        />
+
+        </Paper>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 
-export default CustomerAssignList;
+export default UserExcelList;
