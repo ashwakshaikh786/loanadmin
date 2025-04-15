@@ -52,18 +52,24 @@ const sitemap: MenuItem[] = [
         pathName: 'signin',
         path: paths.usercontrol,
       },
+
+      {
+        name:'Filter',
+        pathName:'filter',
+        path:paths.filter
+      }
     ],
   },
   {
-    id: 'activity',
-    subheader: 'Activity',
-    path: '#!',
+    id: 'filter',
+    subheader: 'filter',
+    path: paths.filter,
     icon: 'ic:baseline-show-chart',
   },
   {
-    id: 'library',
-    subheader: 'Library',
-    path: '#!',
+    id: 'FollowUp',
+    subheader: 'FollowUp',
+    path:paths.followUp,
     icon: 'material-symbols:local-library-outline',
   },
   // {

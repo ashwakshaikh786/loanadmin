@@ -8,6 +8,8 @@ export const rootPaths = {
 
 export default {
   dashboard: `/${rootPaths.pageRoot}/dashboard`,
+  filter: `/${rootPaths.pageRoot}/filter`,
+  followUp: `/${rootPaths.pageRoot}/followup`,
   teledashboard :  `/${rootPaths.teleRoot}/dashboard`,
   activity: `/${rootPaths.pageRoot}/activity`,
   library: `/${rootPaths.pageRoot}/library`,

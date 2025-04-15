@@ -7,6 +7,7 @@ import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
 import TeleLayout from 'layouts/telecaller-layout';
 import AuthLayout from 'layouts/auth-layout';
+// import FollowUp from 'pages/dashboard/FollowUp';
 // import { Logout } from '@mui/icons-material';
 
 const App = lazy(() => import('App'));
@@ -17,6 +18,8 @@ const Logout = lazy(() => import('pages/authentication/Logout'));
 const Test = lazy(() => import('pages/test/test'));
 const Admin = lazy(() => import('pages/test/admin'));
 const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
+const Filter = lazy(() => import('pages/dashboard/Filter'));
+const FollowUp = lazy(() => import('pages/dashboard/FollowUp'));
 const Usercontrol = lazy(() => import('pages/userManagement/userExcel'));
 const Teledashboard =  lazy(() => import('pages/telecaller/Dasboard'));
 
@@ -48,6 +51,7 @@ const router = createBrowserRouter(
               index: true,
               element: <Dashboard />,
             },
+
           ],
         },
         {
@@ -59,13 +63,15 @@ const router = createBrowserRouter(
               </Suspense>
             </TeleLayout>
           ),
+         
           children: [
             {
               index: true,
               element: <Teledashboard />,
             },
           ],
-        },{
+        },
+        {
           path: rootPaths.pageRoot,
           element: (
             <MainLayout>
@@ -125,6 +131,7 @@ const router = createBrowserRouter(
               path: paths.logout, // /auth/logout
               element: <Logout />,
             },
+
           ],
         },
         {
@@ -141,6 +148,15 @@ const router = createBrowserRouter(
               path: paths.usermanagement,
               element: <Usermanagement />,
             },
+            {
+              path: paths.filter,
+              element: <Filter />,
+            },
+
+            {
+              path: paths.followUp,
+              element: <FollowUp />,
+            }
           ],
         },
       ],
