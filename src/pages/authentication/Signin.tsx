@@ -33,8 +33,9 @@ const Signin = () => {
     const role = sessionStorage.getItem('role_name');
     const expiry = sessionStorage.getItem('session_expiry');
     const role_id = sessionStorage.getItem('role_id');
+    const user_id = sessionStorage.getItem('user_id');
     // Check if session exists and not expired
-    if (username && role && role_id && expiry && Date.now() < Number(expiry)) {
+    if (username && role && role_id && expiry && user_id && Date.now() < Number(expiry)) {
       if (role_id === '1') {
         navigate(paths.dashboard);
       } else if (role_id === '2') {
@@ -58,12 +59,13 @@ const Signin = () => {
       });
 
       if (response.data.success) {
-        const { username, role_name, email,role_id } = response.data.data;
+        const { username, role_name, email,role_id,user_id } = response.data.data;
         console.log("succss" ,response.data.data);
         sessionStorage.setItem('username', username);
         sessionStorage.setItem('role_name', role_name);
         sessionStorage.setItem('email', email);
         sessionStorage.setItem('role_id', role_id);
+        sessionStorage.setItem('user_id', user_id);
         console.log('Login success:', username);
         const expiryTime = Date.now() + 12 * 60 * 60 * 1000;
         sessionStorage.setItem('session_expiry', expiryTime.toString());

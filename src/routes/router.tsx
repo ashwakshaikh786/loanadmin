@@ -22,6 +22,7 @@ const Filter = lazy(() => import('pages/dashboard/Filter'));
 const FollowUp = lazy(() => import('pages/dashboard/FollowUp'));
 const Usercontrol = lazy(() => import('pages/userManagement/userExcel'));
 const Teledashboard =  lazy(() => import('pages/telecaller/Dasboard'));
+const TeleAssign  =   lazy(() => import('pages/teleassignmanagement/TelecallerAssign'));
 
 const router = createBrowserRouter(
   [
@@ -71,6 +72,21 @@ const router = createBrowserRouter(
             },
           ],
         },
+        {
+                 element: (
+                   <TeleLayout>
+                     <Suspense fallback={<PageLoader />}>
+                       <Outlet />
+                     </Suspense>
+                   </TeleLayout>
+                 ),
+                 children: [
+                   {
+                     path: paths.teleassign,
+                     element: <TeleAssign />,
+                   },
+                 ],
+               },
         {
           path: rootPaths.pageRoot,
           element: (

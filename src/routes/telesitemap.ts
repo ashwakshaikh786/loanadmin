@@ -27,11 +27,23 @@ const sitemap: MenuItem[] = [
     icon: 'ri:dashboard-fill',
     active: true,
   },
-  
+  {
+    id: 'authentication',
+    subheader: 'Follow Up',
+    icon: 'ic:round-security',
+    active: true,
+    items: [
+      {
+        name: 'Follow Up',
+        pathName: 'FollowUp',
+        path:paths.teleassign,
+      },
+    ],
+  },
   {
     id: 'activity',
     subheader: 'Activity',
-    path: '#!',
+    path:'#!',
     icon: 'ic:baseline-show-chart',
   },
   {
@@ -40,6 +52,8 @@ const sitemap: MenuItem[] = [
     path: '#!',
     icon: 'material-symbols:local-library-outline',
   },
+  
+ 
   // {
   //   id: 'authentication',
   //   subheader: 'Authentication',
@@ -67,13 +81,13 @@ const sitemap: MenuItem[] = [
   {
     id: 'schedules',
     subheader: 'Schedules',
-    path: paths.test,
+    path: '#!',
     icon: 'ic:outline-calendar-today',
   },
   {
     id: 'payouts',
     subheader: 'Payouts',
-    path: paths.admin,
+    path: '#!',
     icon: 'material-symbols:account-balance-wallet-outline',
   },
   {

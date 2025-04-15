@@ -183,7 +183,10 @@ const UserExcelList: React.FC = () => {
             customer_id: customer.customer_id,
             user_id: selectedAgent,
             name: customer.name,
-            mobile: customer.mobile
+            mobile: customer.mobile,
+            loanamount:customer.loanamount || 0,
+            city:customer.city || "",
+            pincode :customer.pincode || 0
           })
         );
 

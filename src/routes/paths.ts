@@ -11,6 +11,7 @@ export default {
   filter: `/${rootPaths.pageRoot}/filter`,
   followUp: `/${rootPaths.pageRoot}/followup`,
   teledashboard :  `/${rootPaths.teleRoot}/dashboard`,
+  teleassign :  `/${rootPaths.teleRoot}/teleassign`,
   activity: `/${rootPaths.pageRoot}/activity`,
   library: `/${rootPaths.pageRoot}/library`,
   schedules: `/${rootPaths.pageRoot}/schedules`,
