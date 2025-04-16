@@ -10,6 +10,7 @@ export default {
   dashboard: `/${rootPaths.pageRoot}/dashboard`,
   filter: `/${rootPaths.pageRoot}/filter`,
   followUp: `/${rootPaths.pageRoot}/followup`,
+  master: `/${rootPaths.pageRoot}/master`,
   teledashboard :  `/${rootPaths.teleRoot}/dashboard`,
   teleassign :  `/${rootPaths.teleRoot}/teleassign`,
   activity: `/${rootPaths.pageRoot}/activity`,

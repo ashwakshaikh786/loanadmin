@@ -20,6 +20,7 @@ const Admin = lazy(() => import('pages/test/admin'));
 const Usermanagement = lazy(() => import('pages/UserControl/userRegister'));
 const Filter = lazy(() => import('pages/dashboard/Filter'));
 const FollowUp = lazy(() => import('pages/dashboard/FollowUp'));
+const Master = lazy(() => import('pages/dashboard/Master'));
 const Usercontrol = lazy(() => import('pages/userManagement/userExcel'));
 const Teledashboard =  lazy(() => import('pages/telecaller/Dasboard'));
 const TeleAssign  =   lazy(() => import('pages/teleassignmanagement/TelecallerAssign'));
@@ -172,6 +173,11 @@ const router = createBrowserRouter(
             {
               path: paths.followUp,
               element: <FollowUp />,
+            },
+
+            {
+              path: paths.master,
+              element: <Master />,
             }
           ],
         },

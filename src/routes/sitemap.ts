@@ -60,6 +60,22 @@ const sitemap: MenuItem[] = [
       }
     ],
   },
+
+
+  {
+    id: 'Master Settings',
+    subheader: 'Master Settings', 
+    icon: 'ic:round-security',
+    active: true,
+    items: [
+      {
+        name: 'Users',
+        pathName: 'signin',
+        path: paths.master,
+      },
+    ],
+  },
+
   {
     id: 'filter',
     subheader: 'filter',
@@ -72,30 +88,6 @@ const sitemap: MenuItem[] = [
     path:paths.followUp,
     icon: 'material-symbols:local-library-outline',
   },
-  // {
-  //   id: 'authentication',
-  //   subheader: 'Authentication',
-  //   icon: 'ic:round-security',
-  //   active: true,
-  //   items: [
-  //     {
-  //       name: 'Sign In',
-  //       pathName: 'signin',
-  //       path: paths.signin,
-  //     },
-  //     {
-  //       name: 'Sign Up',
-  //       pathName: 'signup',
-  //       path: paths.signup,
-  //     },
-
-  //     {
-  //       name: 'Logout',
-  //       pathName: 'logout',
-  //       path: paths.logout,
-  //     },
-  //   ],
-  // },
   {
     id: 'schedules',
     subheader: 'Schedules',
