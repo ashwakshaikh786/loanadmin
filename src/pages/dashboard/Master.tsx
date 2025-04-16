@@ -278,9 +278,7 @@ const Master = () => {
         <DialogContent>
           {selectedItem && (
             <>
-              <DialogContentText>
-                <strong>ID:</strong> {selectedItem.id}
-              </DialogContentText>
+                
               <DialogContentText>
                 <strong>Name:</strong> {selectedItem.currentupdatename}
               </DialogContentText>
