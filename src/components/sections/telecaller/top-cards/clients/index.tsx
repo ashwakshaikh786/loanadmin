@@ -18,16 +18,20 @@ const Clients = () => {
     useEffect(() => {
       const fetchCounts = async () => {
         try {
-          const response = await axios.get(`${BASE_URL}/api/assign/AdminassignListCount`);
+          const userId = sessionStorage.getItem('user_id');
+          if (!userId) return;
+  
+          const response = await axios.post(`${BASE_URL}/api/telecaller/assign/teleassignListCount`, {
+            userId: userId,
+          });
           setCounts(response.data.counts || []);
         } catch (error) {
           console.error('Failed to fetch dashboard counts:', error);
         }
       };
-    
+  
       fetchCounts();
     }, []);
-    
     return (
       <Paper
         component={Stack}

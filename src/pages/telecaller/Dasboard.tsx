@@ -1,23 +1,22 @@
 import { 
     Grid, 
-    Typography, 
-  } from '@mui/material';
-// import TopCards from 'components/sections/dashboard/top-cards';
-import AvatarCard from 'components/sections/dashboard/avatar-card';
-import TotalSpent from 'components/sections/dashboard/total-spent';
-import Balance from 'components/sections/dashboard/balance';
-import SpentThisMonth from 'components/sections/dashboard/spent-this-month';
-import Transactions from 'components/sections/dashboard/transactions';
-import Tasks from 'components/sections/dashboard/tasks';
-import Earnings from 'components/sections/dashboard/earnings';
-import CreditBalance from 'components/sections/dashboard/credit-balance';
-import TransactionHistory from 'components/sections/dashboard/transaction-history';
-
+    
+  } from '@mui/material'; 
+  import TopCards from 'components/sections/telecaller/top-cards';
+  import AvatarCard from 'components/sections/telecaller/avatar-card';
+  import TotalSpent from 'components/sections/telecaller/total-spent';
+  import Balance from 'components/sections/telecaller/balance';
+  import SpentThisMonth from 'components/sections/telecaller/spent-this-month';
+  import Transactions from 'components/sections/telecaller/transactions';
+  import Tasks from 'components/sections/telecaller/tasks';
+  import Earnings from 'components/sections/telecaller/earnings';
+  import CreditBalance from 'components/sections/telecaller/credit-balance';
+  import TransactionHistory from 'components/sections/telecaller/transaction-history';
 const Dashbaord = () => {
   return (
     <Grid container spacing={2.5}>
       <Grid item xs={12}>
-      <Typography>Hello world Tele dashobard</Typography>
+      <TopCards />
       </Grid>
 
       <Grid item xs={12} md={8}>

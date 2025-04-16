@@ -34,21 +34,37 @@ const sitemap: MenuItem[] = [
     active: true,
     items: [
       {
-        name: 'Follow Up',
+        name: 'All Follow Up ',
         pathName: 'FollowUp',
         path:paths.teleassign,
       },
+      {
+        name: 'Today Follow Up ',
+        pathName: 'FollowUp',
+        path:paths.todayfollowup,
+      },
+      {
+        name: 'Backlog Follow Up ',
+        pathName: 'FollowUp',
+        path:paths.backlogfollowup,
+      },
+      {
+        name: 'Open Follow Up ',
+        pathName: 'FollowUp',
+        path:paths.nextfollowup,
+      },
+     
     ],
   },
   {
     id: 'activity',
-    subheader: 'Activity',
+    subheader: 'coming soon',
     path:'#!',
     icon: 'ic:baseline-show-chart',
   },
   {
     id: 'library',
-    subheader: 'Library',
+    subheader: 'coming soon',
     path: '#!',
     icon: 'material-symbols:local-library-outline',
   },
@@ -78,24 +94,24 @@ const sitemap: MenuItem[] = [
   //     },
   //   ],
   // },
-  {
-    id: 'schedules',
-    subheader: 'Schedules',
-    path: '#!',
-    icon: 'ic:outline-calendar-today',
-  },
-  {
-    id: 'payouts',
-    subheader: 'Payouts',
-    path: '#!',
-    icon: 'material-symbols:account-balance-wallet-outline',
-  },
-  {
-    id: 'settings',
-    subheader: 'Settings',
-    path: '#!',
-    icon: 'ic:outline-settings',
-  },
+  // {
+  //   id: 'schedules',
+  //   subheader: 'Schedules',
+  //   path: '#!',
+  //   icon: 'ic:outline-calendar-today',
+  // },
+  // {
+  //   id: 'payouts',
+  //   subheader: 'Payouts',
+  //   path: '#!',
+  //   icon: 'material-symbols:account-balance-wallet-outline',
+  // },
+  // {
+  //   id: 'settings',
+  //   subheader: 'Settings',
+  //   path: '#!',
+  //   icon: 'ic:outline-settings',
+  // },
 ];
 
 export default sitemap;

@@ -20,7 +20,7 @@ const TelecallerSidebar = ({ onSelectLead }: TelecallerSidebarProps) => {
         const userId = sessionStorage.getItem('user_id');
         if (!userId) return;
 
-        const response = await axios.post(`${BASE_URL}/api/telecaller/assign/teleassignList`, {
+        const response = await axios.post(`${BASE_URL}/api/telecaller/assign/teleassignListBacklog`, {
           userId: userId,
         });
         setRecords(response.data.data || []);
@@ -47,7 +47,7 @@ const TelecallerSidebar = ({ onSelectLead }: TelecallerSidebarProps) => {
   return (
     <Box sx={{ height: '100vh',width:"100%", overflowY: 'auto', p: { xs: 1, md: 2 }, bgcolor: '#fff' ,borderRadius: 3 }}>
       <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-        All Leads
+        Backlog Leads
       </Typography>
 
       {loading ? (

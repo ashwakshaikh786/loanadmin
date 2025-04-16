@@ -1,5 +1,5 @@
-import {Grid,Typography} from '@mui/material';
-// import TopCards from 'components/sections/dashboard/top-cards';
+import {Grid} from '@mui/material';
+import TopCards from 'components/sections/dashboard/top-cards';
 import AvatarCard from 'components/sections/dashboard/avatar-card';
 import TotalSpent from 'components/sections/dashboard/total-spent';
 import Balance from 'components/sections/dashboard/balance';
@@ -14,7 +14,7 @@ const Dashbaord = () => {
   return (
     <Grid container spacing={2.5}>
       <Grid item xs={12}>
-      <Typography>Hello world Main dashboard</Typography>
+      <TopCards />
       </Grid>
 
       <Grid item xs={12} md={8}>

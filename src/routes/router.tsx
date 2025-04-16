@@ -24,6 +24,9 @@ const Master = lazy(() => import('pages/dashboard/Master'));
 const Usercontrol = lazy(() => import('pages/userManagement/userExcel'));
 const Teledashboard =  lazy(() => import('pages/telecaller/Dasboard'));
 const TeleAssign  =   lazy(() => import('pages/teleassignmanagement/TelecallerAssign'));
+const Backlogfollowup  =   lazy(() => import('pages/teleassignmanagement/TelecallerAssignBacklog'));
+const Nextfollowup  =   lazy(() => import('pages/teleassignmanagement/TelecallerAssignNext'));
+const Todayfollowup  =   lazy(() => import('pages/teleassignmanagement/TelecallerAssignToday'));
 
 const router = createBrowserRouter(
   [
@@ -179,6 +182,51 @@ const router = createBrowserRouter(
               path: paths.master,
               element: <Master />,
             }
+          ],
+        },
+        {
+          element: (
+            <TeleLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </TeleLayout>
+          ),
+          children: [
+            {
+              path: paths.todayfollowup,
+              element: <Todayfollowup />,
+            },
+          ],
+        },
+        {
+          element: (
+            <TeleLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </TeleLayout>
+          ),
+          children: [
+            {
+              path: paths.backlogfollowup,
+              element: <Backlogfollowup />,
+            },
+          ],
+        },
+        {
+          element: (
+            <TeleLayout>
+              <Suspense fallback={<PageLoader />}>
+                <Outlet />
+              </Suspense>
+            </TeleLayout>
+          ),
+          children: [
+            {
+              path: paths.nextfollowup,
+              element: <Nextfollowup />,
+            },
           ],
         },
       ],

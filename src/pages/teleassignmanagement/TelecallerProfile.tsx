@@ -25,6 +25,11 @@ import {
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import BASE_URL from '../../config';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 export interface LeadProfile {
   id: string;
   customer_id:string;
@@ -44,7 +49,7 @@ export interface LeadProfile {
 
 interface UpdateOption {
   currentupdatename: string;
-  currentupdate_id: string; // Fixed typo from currepupdate_id
+  currentupdate_id: string; 
 }
 
 interface TelecallerProfileProps {
@@ -110,36 +115,58 @@ const TelecallerProfile = ({ lead, onBack }: TelecallerProfileProps) => {
       })
       .catch(err => console.error(err));
   }, []);
-  
 
+  
   const handleInputChange = (field: string, value: string) => {
+    if (field === 'nextfollowup_dt') {
+      const today = new Date().toISOString().split('T')[0];
+      if (value < today) {
+        alert('You cannot select a past date.');
+        return;
+      }
+    }
+  
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-
+  
+  
   const handleSubmit = async () => {
     if (!lead) return;
-
+  
     const payload = {
       tele_id: lead.tele_id,
       customer_id: lead.customer_id,
       user_id: lead.user_id,
       ...formData
     };
-
+  
     try {
       await axios.post(`${BASE_URL}/api/telecaller/assign/nextfollowup`, payload);
-      alert('Follow-up added successfully');
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Follow-up added successfully',
+        confirmButtonColor: '#3085d6'
+      }).then(() => {
+        window.location.reload(); // Reload the page after clicking "OK"
+      });
       setOpen(false);
+      
     } catch (err) {
       console.error(err);
-      alert('Failed to submit follow-up');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to submit follow-up',
+        confirmButtonColor: '#d33'
+      });
     }
   };
 
   if (!lead) return null;
 
   return (
-    <Paper sx={{ width: '100%', p: { xs: 2, md: 3 }, borderRadius: 3 }}>
+    <Paper sx={{ width: '100%', p: { xs: 1, md: 2 }, borderRadius: 3 }}>
     <Box>
       {/* Back Button */}
       <Box display="flex" justifyContent="flex-end" mb={2}>
@@ -179,11 +206,21 @@ const TelecallerProfile = ({ lead, onBack }: TelecallerProfileProps) => {
       
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <InfoCard icon={<PersonIcon color="primary" />} label="Name" value={lead.name} />
+              <InfoCard icon={<PersonIcon color="primary" />}   label="Name" value={lead.name} />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <InfoCard icon={<PhoneIcon color="success" />} label="Mobile" value={lead.mobile} />
-            </Grid>
+          
+  <Grid item xs={12} sm={6} md={4} style={{ cursor: 'pointer' }}>
+  <a href={`tel:${lead.mobile}`} style={{ textDecoration: 'none' }}>
+    <InfoCard
+      icon={<PhoneIcon color="success" />}
+      label="Mobile"
+      value={lead.mobile}
+    />
+    </a>
+  </Grid>
+
+
+
             <Grid item xs={12} sm={6} md={4}>
               <InfoCard icon={<MonetizationOnIcon color="warning" />} label="Loan Amount" value={lead.loanamount} />
             </Grid>
@@ -248,27 +285,39 @@ const TelecallerProfile = ({ lead, onBack }: TelecallerProfileProps) => {
           </TextField>
   
           <TextField
-            type="date"
-            label="Next Followup Date"
-            fullWidth
-            value={formData.nextfollowup_dt}
-            onChange={(e) => handleInputChange('nextfollowup_dt', e.target.value)}
-            margin="normal"
-            size="small"
-            InputLabelProps={{ shrink: true }}
-          />
-  
-          <TextField
-            type="time"
-            label="Next Followup Time"
-            fullWidth
-            value={formData.nextfollowup_at}
-            onChange={(e) => handleInputChange('nextfollowup_at', e.target.value)}
-            margin="normal"
-            size="small"
-            InputLabelProps={{ shrink: true }}
-          />
-  
+  type="date"
+  label="Next Followup Date"
+  fullWidth
+  value={formData.nextfollowup_dt}
+  onChange={(e) => handleInputChange('nextfollowup_dt', e.target.value)}
+  margin="normal"
+  size="small"
+  InputLabelProps={{ shrink: true }}
+  inputProps={{
+    min: new Date().toISOString().split('T')[0] // disables past dates
+  }}
+/>
+
+
+<LocalizationProvider dateAdapter={AdapterDayjs}>
+  <TimePicker
+    label="Next Followup Time"
+    value={dayjs(formData.nextfollowup_at, 'hh:mm A')}
+    onChange={(newValue) => {
+      const time = newValue ? newValue.format('hh:mm A') : '';
+      handleInputChange('nextfollowup_at', time);
+    }}
+     // Use 12-hour format with AM/PM
+    slotProps={{
+      textField: {
+        fullWidth: true,
+        margin: 'normal',
+        size: 'small',
+      }
+    }}
+  />
+</LocalizationProvider>
+
           <TextField
             label="Note"
             fullWidth
