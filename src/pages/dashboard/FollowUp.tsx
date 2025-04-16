@@ -23,6 +23,7 @@ interface FollowUp {
   currentupdate_id?: number;
   nextfollowup_dt: string;
   nextfollowup_at: string;
+  max_nextfollowup_dt: string;
   note: string;
   create_dt: string;
   create_at: string;
@@ -91,9 +92,93 @@ const FollowUp: React.FC = () => {
     setSelectedRow(null);
   };
 
+
+  const downloadCSV = (data: FollowUp[]) => {
+    console.log("Downloading data: ", data);
+    if (!data.length){
+      alert("No data to download");
+      return
+    };
+    
+  
+    // Define which fields you want in the CSV
+    const headers: (keyof FollowUp)[] = [
+      'nextfollowup_id',
+      'nextfollowup_dt',
+      'nextfollowup_at',
+      'note',
+      'create_dt',
+      'create_at',
+      'customer_name',
+      'customer_mobile',
+      'customer_city',
+      'agent_username',
+      'status_name',
+    ];
+  
+    const csvRows = [
+      headers.join(','), // header row
+      ...data.map((row) =>
+        headers
+          .map((fieldName) => `"${String(row[fieldName] ?? '').replace(/\n/g, ' ').replace(/"/g, '""')}"`)
+          .join(',')
+      ),
+    ];
+  
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'followup_data.csv');
+    document.body.appendChild(link);
+  
+    setTimeout(() => {
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 0);
+  };
+  
+  
+
   // Define DataGrid column definitions without Tele ID, Customer ID, User ID, Update ID.
   const columns: GridColDef[] = [
-    { field: 'nextfollowup_id', headerName: 'ID', width: 70 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 70,
+    },
+    
+    
+   
+    // { field: 'create_dt', headerName: 'Created Date', flex: 1, minWidth: 120 },
+    // { field: 'create_at', headerName: 'Created Time', flex: 1, minWidth: 120 },
+    {
+      field: 'customer_name',
+      headerName: 'Customer Name',
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: 'agent_username',
+      headerName: 'Agent Username',
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: 'customer_mobile',
+      headerName: 'Mobile',
+      flex: 1,
+      minWidth: 150,
+    },
+    {
+      field: 'customer_city',
+      headerName: 'City',
+      flex: 1,
+      minWidth: 150,
+    },
     {
       field: 'nextfollowup_dt',
       headerName: 'Follow-up Date',
@@ -120,32 +205,7 @@ const FollowUp: React.FC = () => {
         </Typography>
       ),
     },
-    // { field: 'create_dt', headerName: 'Created Date', flex: 1, minWidth: 120 },
-    { field: 'create_at', headerName: 'Created Time', flex: 1, minWidth: 120 },
-    {
-      field: 'customer_name',
-      headerName: 'Customer Name',
-      flex: 1,
-      minWidth: 150,
-    },
-    {
-      field: 'customer_mobile',
-      headerName: 'Mobile',
-      flex: 1,
-      minWidth: 150,
-    },
-    {
-      field: 'customer_city',
-      headerName: 'City',
-      flex: 1,
-      minWidth: 150,
-    },
-    {
-      field: 'agent_username',
-      headerName: 'Agent Username',
-      flex: 1,
-      minWidth: 150,
-    },
+    
     {
       field: 'status_name',
       headerName: 'Status',
@@ -190,32 +250,44 @@ const FollowUp: React.FC = () => {
 
   return (
     <Box sx={{ p: { xs: 1, sm: 2 }, pb: 10 }}>
-      {/* Search bar & clear button aligned to the right */}
-      <Stack
-        spacing={2}
-        direction="row"
-        sx={{ mb: 2, justifyContent: 'flex-end' }}
-        alignItems="center"
-      >
-        <TextField
-          label="Search Follow-ups"
-          variant="outlined"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          size={isSmallScreen ? 'small' : 'medium'}
-          sx={{ width: isSmallScreen ? '100%' : 300 }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={clearFilters}
-          size={isSmallScreen ? 'small' : 'medium'}
-          sx={{ borderRadius: 1 }}
-        >
-          Clear
-        </Button>
-      </Stack>
 
+<Stack
+  spacing={2}
+  direction="row"
+  sx={{ mb: 2, justifyContent: 'flex-end' }}
+  alignItems="center"
+>
+  <TextField
+    label="Search Follow-ups"
+    variant="outlined"
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    size={isSmallScreen ? 'small' : 'medium'}
+    sx={{ width: isSmallScreen ? '100%' : 300 }}
+  />
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={clearFilters}
+    size={isSmallScreen ? 'small' : 'medium'}
+    sx={{ borderRadius: 1 }}
+  >
+    Clear
+  </Button>
+
+  {/* Download CSV Button */}
+  <Button
+    variant="contained"
+    color="success"
+    onClick={() => downloadCSV([...filteredFollowUps])}
+    size={isSmallScreen ? 'small' : 'medium'}
+    sx={{ borderRadius: 1 }}
+  >
+    Download CSV
+  </Button>
+</Stack>
+
+      
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
         Showing {filteredFollowUps.length} Follow-up Records
       </Typography>
@@ -260,7 +332,7 @@ const FollowUp: React.FC = () => {
           {selectedRow && (
             <Box sx={{ mt: 2 }}>
               <Typography>
-                <strong>Follow-up Time:</strong> {selectedRow.nextfollowup_at}
+                <strong>Follow-up Time:</strong> {selectedRow. max_nextfollowup_dt}
               </Typography>
               <Typography sx={{ whiteSpace: 'pre-wrap', mt: 1 }}>
                 <strong>Note:</strong> {selectedRow.note}
@@ -275,14 +347,16 @@ const FollowUp: React.FC = () => {
                 <strong>Customer Name:</strong> {selectedRow.customer_name}
               </Typography>
               <Typography sx={{ mt: 1 }}>
+                <strong>Agent Username:</strong> {selectedRow.agent_username}
+              </Typography>
+              
+              <Typography sx={{ mt: 1 }}>
                 <strong>Customer Mobile:</strong> {selectedRow.customer_mobile}
               </Typography>
               <Typography sx={{ mt: 1 }}>
                 <strong>Customer City:</strong> {selectedRow.customer_city}
               </Typography>
-              <Typography sx={{ mt: 1 }}>
-                <strong>Agent Username:</strong> {selectedRow.agent_username}
-              </Typography>
+              
               <Typography sx={{ mt: 1 }}>
                 <strong>Status:</strong> {selectedRow.status_name}
               </Typography>

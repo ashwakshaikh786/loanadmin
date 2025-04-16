@@ -60,6 +60,8 @@ const Filter: React.FC = () => {
     setLoading(prev => ({ ...prev, customers: true }));
     try {
       const res = await axios.get(`${BASE_URL}/api/telecaller/telefilter`);
+      console.log(res.data);
+      
       const data = (res.data?.data || []).map((user: Customer, index: number) => ({
         id: index + 1,
         customer_id: user.customer_id,
