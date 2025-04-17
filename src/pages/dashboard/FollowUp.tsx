@@ -14,6 +14,8 @@ import {
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import axios from 'axios';
 import BASE_URL from '../../config';
+import dayjs from 'dayjs';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 interface FollowUp {
   nextfollowup_id: number;
@@ -93,17 +95,61 @@ const FollowUp: React.FC = () => {
   };
 
 
-  const downloadCSV = (data: FollowUp[]) => {
-    console.log("Downloading data: ", data);
-    if (!data.length){
-      alert("No data to download");
-      return
-    };
+  // const downloadCSV = (data: FollowUp[]) => {
+  //   console.log("Downloading data: ", data);
+  //   if (!data.length){
+  //     alert("No data to download");
+  //     return
+  //   };
     
   
-    // Define which fields you want in the CSV
+  //   // Define which fields you want in the CSV
+  //   const headers: (keyof FollowUp)[] = [
+  //     'nextfollowup_dt',
+  //     'nextfollowup_at',
+  //     'note',
+  //     'create_dt',
+  //     'create_at',
+  //     'customer_name',
+  //     'customer_mobile',
+  //     'customer_city',
+  //     'agent_username',
+  //     'status_name',
+  //   ];
+  
+  //   const csvRows = [
+  //     headers.join(','), // header row
+  //     ...data.map((row) =>
+  //       headers
+  //         .map((fieldName) => `"${String(row[fieldName] ?? '').replace(/\n/g, ' ').replace(/"/g, '""')}"`)
+  //         .join(',')
+  //     ),
+  //   ];
+  
+  //   const csvString = csvRows.join('\n');
+  //   const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  //   const url = URL.createObjectURL(blob);
+  
+  //   const link = document.createElement('a');
+  //   link.href = url;
+  //   link.setAttribute('download', 'followup_data.csv');
+  //   document.body.appendChild(link);
+  
+  //   setTimeout(() => {
+  //     link.click();
+  //     document.body.removeChild(link);
+  //     URL.revokeObjectURL(url);
+  //   }, 0);
+  // };
+
+  const downloadCSV = (data: FollowUp[]) => {
+    console.log("Downloading data: ", data);
+    if (!data.length) {
+      alert("No data to download");
+      return;
+    }
+  
     const headers: (keyof FollowUp)[] = [
-      'nextfollowup_id',
       'nextfollowup_dt',
       'nextfollowup_at',
       'note',
@@ -120,7 +166,18 @@ const FollowUp: React.FC = () => {
       headers.join(','), // header row
       ...data.map((row) =>
         headers
-          .map((fieldName) => `"${String(row[fieldName] ?? '').replace(/\n/g, ' ').replace(/"/g, '""')}"`)
+          .map((fieldName) => {
+            let value = String(row[fieldName] ?? '')
+              .replace(/\n/g, ' ')
+              .replace(/"/g, '""');
+  
+            // Fix for mobile number being treated as scientific notation
+            if (fieldName === 'customer_mobile') {
+              value = `="${value}"`; // Forces Excel to treat as text
+            }
+  
+            return `"${value}"`;
+          })
           .join(',')
       ),
     ];
@@ -140,6 +197,7 @@ const FollowUp: React.FC = () => {
       URL.revokeObjectURL(url);
     }, 0);
   };
+  
   
   
 
@@ -184,6 +242,8 @@ const FollowUp: React.FC = () => {
       headerName: 'Follow-up Date',
       flex: 1,
       minWidth: 130,
+      valueGetter: (params: {value: string}) => dayjs(params.value).format('DD-MM-YYYY')
+
     },
     {
       field: 'nextfollowup_at',
@@ -221,12 +281,12 @@ const FollowUp: React.FC = () => {
       disableColumnMenu: true,
       renderCell: (params) => (
         <Button
-          variant="contained"
-          color="primary"
+          // variant="contained"
+          // color="primary"
           onClick={() => handleView(params.row)}
           size="small"
         >
-          View
+          <VisibilityIcon  sx={{ color: 'green' }}/>
         </Button>
       ),
     },

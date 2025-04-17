@@ -69,11 +69,14 @@ const Filter: React.FC = () => {
         name: user.name || '--',
         mobile: user.mobile || '--',
         Proccess: user.Proccess ? "Assigned" : "Pending",
-        created_at: user.created_at || '--',
+        created_at: user.created_at
+          ? new Date(user.created_at).toLocaleDateString('en-GB').replace(/\//g, '-')
+          : '--',
         loanamount: user.loanamount || '--',
         city: user.city || '--',
         pincode: user.pincode || '--',
       }));
+      
       setCustomers(data);
       setFilteredCustomers(data);
       setError(prev => ({ ...prev, customers: false }));
@@ -177,7 +180,9 @@ const Filter: React.FC = () => {
       headerName: 'Created Date',
       flex: 1,
       minWidth: 120,
+      
       // hide: 'isSmallScreen',
+
     },
   ];
 
