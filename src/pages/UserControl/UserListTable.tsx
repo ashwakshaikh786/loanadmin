@@ -116,7 +116,14 @@ const UserListTable = ({ searchText, onEditUser }: UserListTableProps) => {
       flex: 1.5,
       minWidth: 140,
       renderCell: (params) => (
-        <Chip label={params.value} color="primary" size="small" />
+        <Chip
+          label={params.value}
+          size="small"
+          sx={{
+            bgcolor: 'primary.main',
+            color: 'primary.contrastText', 
+          }}
+        />
       ),
     },
     {
