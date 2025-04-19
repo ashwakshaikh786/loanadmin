@@ -152,7 +152,7 @@ const Master = () => {
   };
 
   const columns: GridColDef<CurrentUpdate>[] = [
-    { field: 'id', headerName: 'Sr. No' ,flex:1 },
+    { field: 'id', headerName: 'Sr. No' ,flex:1 ,headerAlign: 'center',align: 'center'},
     { field: 'currentupdatename', headerName: 'Disposition Name' ,flex:1},
     {
       field: 'action',
@@ -210,6 +210,24 @@ const Master = () => {
           disableRowSelectionOnClick
           pageSizeOptions={[5, 10, 20, 50]}
           autoHeight
+          sx={{
+            '& .MuiDataGrid-columnHeaders div[role="row"]': {
+              backgroundColor: 'primary.main',
+              borderRadius:"12px"
+            },
+            '& .MuiDataGrid-columnHeaderTitle': {
+              color: 'info.light',
+              fontWeight: 'bold',
+            },
+            '& .MuiDataGrid-iconButtonContainer': {
+              color: 'white',
+            },
+            '& .MuiDataGrid-sortIcon': {
+              color: 'info.light',
+              fontWeight: 'bold',
+            },
+          }}
+          
         />
       </Paper>
 

@@ -369,6 +369,24 @@ const UserExcelList: React.FC = () => {
               density={isSmallScreen ? 'compact' : 'standard'}
            
               autoHeight  
+
+              sx={{
+                '& .MuiDataGrid-columnHeaders div[role="row"]': {
+                  backgroundColor: 'primary.main',
+                  borderRadius:"12px"
+                },
+                '& .MuiDataGrid-columnHeaderTitle': {
+                  color: 'info.light',
+                  fontWeight: 'bold',
+                },
+                '& .MuiDataGrid-iconButtonContainer': {
+                  color: 'white',
+                },
+                '& .MuiDataGrid-sortIcon': {
+                  color: 'info.light',
+                  fontWeight: 'bold',
+                },
+              }}
             />
           </Paper>
         </Stack>
