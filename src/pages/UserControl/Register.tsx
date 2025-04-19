@@ -27,6 +27,7 @@ const Register = ({ onBackToList, userData, isEditMode = false }: RegisterProps)
     role_name: string;
   };
   const [roles, setRoles] = useState<Role[]>([]);
+  const userId = sessionStorage.getItem('user_id');
   const formatDateForInput = (dateString: string) => {
     if (!dateString) return '';
 
@@ -41,6 +42,7 @@ const Register = ({ onBackToList, userData, isEditMode = false }: RegisterProps)
     
     return dateString; // fallback
   };
+ 
   const [formData, setFormData] = useState({
     user_id: '',
     first_name: '',
@@ -52,7 +54,8 @@ const Register = ({ onBackToList, userData, isEditMode = false }: RegisterProps)
     password: '',
     role_id: '',
     dob: '',
-    modified_uid: '1'
+    createuid:userId,
+    modified_uid: userId
   });
   useEffect(() => {
     if (isEditMode && userData) {
@@ -67,7 +70,8 @@ const Register = ({ onBackToList, userData, isEditMode = false }: RegisterProps)
         password: '', // Never pre-fill password
         role_id: userData.role_id?.toString() || '',
         dob: formatDateForInput(userData.dob || ''),
-        modified_uid: '1'
+        createuid:userId,
+        modified_uid: userId
       });
     }
   }, [isEditMode, userData]);
@@ -124,7 +128,8 @@ const Register = ({ onBackToList, userData, isEditMode = false }: RegisterProps)
             password: '',
             role_id: '',
             dob: '',
-            modified_uid: '1'
+            createuid:userId,
+            modified_uid: userId
           });
         }
       }

@@ -65,6 +65,7 @@ const UserListTable = ({ searchText, onEditUser }: UserListTableProps) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const userId = sessionStorage.getItem('user_id');
   const columns: GridColDef<User>[] = [
     {
       field: 'id',
@@ -173,11 +174,11 @@ const UserListTable = ({ searchText, onEditUser }: UserListTableProps) => {
 
   const handleDeleteConfirm = async () => {
     if (!selectedUser) return;
-
     try {
-      await axios.post(`${BASE_URL}/api/user/userDelete`, {
-        user_id: selectedUser._id,
-        is_active: 0
+      await axios.post(`${BASE_URL}/api/user/userdeactivate`, {
+        selectuserid: selectedUser.user_id,
+        active: 0,
+        deleteid: userId
       });
 
       Swal.fire('Success!', 'User deactivated successfully', 'success');
