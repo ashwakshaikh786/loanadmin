@@ -140,21 +140,21 @@ const UserListTable = ({ searchText, onEditUser }: UserListTableProps) => {
             color="info"
             size="small"
           >
-            <ViewIcon />
+            <ViewIcon  sx={{ color: 'success.light' }} />
           </IconButton>
           <IconButton
             onClick={() => onEditUser(params.row)}
             color="primary"
             size="small"
           >
-            <EditIcon />
+            <EditIcon sx={{ color: 'primary.light' }} />
           </IconButton>
           <IconButton
             onClick={() => handleDeleteClick(params.row)}
             color="error"
             size="small"
           >
-            <DeleteIcon />
+            <DeleteIcon  sx={{ color: 'red' }}/>
           </IconButton>
         </>
       ),
