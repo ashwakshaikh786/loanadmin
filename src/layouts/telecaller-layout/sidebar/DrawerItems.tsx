@@ -54,7 +54,7 @@ const DrawerItems = () => {
               fontWeight={500}
               fontFamily={fontFamily.poppins}
             >
-              Dashboard
+              Technology
             </Typography>
           </Box>
         </ButtonBase>

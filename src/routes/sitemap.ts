@@ -18,19 +18,30 @@ export interface MenuItem {
   active?: boolean;
   items?: SubMenuItem[];
 }
+const iconMap: Record<string, string> = {
+  'Dashboard': 'ri:dashboard-fill',
+  'User Management': 'ic:round-security',
+  'Tellecaller Management': 'ic:round-phone',
+  'Master Settings': 'mdi:cog-outline',
+  'filter': 'ic:baseline-filter-list',
+  'FollowUp': 'material-symbols:local-library-outline',
+  'Schedules': 'ic:outline-calendar-today',
+  'Payouts': 'material-symbols:account-balance-wallet-outline',
+  'Settings': 'ic:outline-settings',
+};
 
 const sitemap: MenuItem[] = [
   {
     id: 'dashboard',
     subheader: 'Dashboard',
     path: '/',
-    icon: 'ri:dashboard-fill',
+    icon: iconMap['Dashboard'],
     active: true,
   },
   {
     id: 'User Management',
     subheader: 'User Management',
-    icon: 'ic:round-security',
+    icon: iconMap['User Management'],
     active: true,
     items: [
       {
@@ -40,72 +51,63 @@ const sitemap: MenuItem[] = [
       },
     ],
   },
-  
   {
     id: 'Tellecaller Management',
     subheader: 'Tellecaller Management',
-    icon: 'ic:round-security',
+    icon: iconMap['Tellecaller Management'],
     active: true,
     items: [
       {
-        name: 'Customers',
+        name: 'Customers List',
         pathName: 'signin',
         path: paths.usercontrol,
       },
-
       {
-        name:'Filter',
-        pathName:'filter',
-        path:paths.filter
-      }
+        name: 'Assigned Customers',
+        pathName: 'Assigned Customers',
+        path: paths.filter,
+      },
     ],
   },
-
-
   {
     id: 'Master Settings',
-    subheader: 'Master Settings', 
-    icon: 'ic:round-security',
+    subheader: 'Master Settings',
+    icon: iconMap['Master Settings'],
     active: true,
     items: [
       {
-        name: 'Users',
-        pathName: 'signin',
+        name: 'Disposition',
+        pathName: 'Disposition',
         path: paths.master,
       },
     ],
   },
-
-  {
-    id: 'filter',
-    subheader: 'filter',
-    path: paths.filter,
-    icon: 'ic:baseline-show-chart',
-  },
+  
   {
     id: 'FollowUp',
     subheader: 'FollowUp',
-    path:paths.followUp,
-    icon: 'material-symbols:local-library-outline',
+    path: paths.followUp,
+    icon: iconMap['FollowUp'],
   },
   {
     id: 'schedules',
-    subheader: 'Schedules',
-    path: paths.test,
-    icon: 'ic:outline-calendar-today',
-  },
-  {
-    id: 'payouts',
-    subheader: 'Payouts',
-    path: paths.admin,
-    icon: 'material-symbols:account-balance-wallet-outline',
-  },
-  {
-    id: 'settings',
-    subheader: 'Settings',
+    subheader: 'coming soon',
     path: '#!',
-    icon: 'ic:outline-settings',
-  },
+    icon: iconMap['Schedules'],
+   },
+  // {
+  //   id: 'payouts',
+  //   subheader: 'coming soon',
+  //   path: '#!',
+  //   icon: iconMap['Payouts'],
+  // },
+  // {
+  //   id: 'settings',
+  //   subheader: 'coming soon',
+  //   path: '#!',
+  //   icon: iconMap['Settings'],
+  // },
 ];
+
 
 export default sitemap;

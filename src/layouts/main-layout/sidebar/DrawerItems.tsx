@@ -46,6 +46,7 @@ const DrawerItems = () => {
             >
               Centeos
             </Typography>
+          
             <Typography
               mt={-0.35}
               variant="body2"
@@ -54,7 +55,7 @@ const DrawerItems = () => {
               fontWeight={500}
               fontFamily={fontFamily.poppins}
             >
-              Dashboard
+              Technology
             </Typography>
           </Box>
         </ButtonBase>

@@ -10,30 +10,31 @@ const ListItem = ({ subheader, icon, path, active }: MenuItem) => {
     <ListItemButton
       component={Link}
       href={path}
+      aria-current={active ? 'page' : undefined}
       sx={{
         mb: 2.5,
-        bgcolor: active ? 'primary.main' : null,
+        bgcolor: active ? 'primary.main' : 'transparent',
         '&:hover': {
-          bgcolor: active ? 'primary.main' : null,
+          bgcolor: active ? 'primary.main' : 'action.hover',
         },
       }}
     >
-      <ListItemIcon>
-        {icon && (
+      {icon && (
+        <ListItemIcon>
           <IconifyIcon
             icon={icon}
             fontSize="h4.fontSize"
             sx={{
-              color: active ? 'info.light' : null,
+              color: active ? 'info.light' : 'text.primary',
             }}
           />
-        )}
-      </ListItemIcon>
+        </ListItemIcon>
+      )}
       <ListItemText
         primary={subheader}
         sx={{
           '& .MuiListItemText-primary': {
-            color: active ? 'info.light' : null,
+            color: active ? 'info.light' : 'text.primary',
           },
         }}
       />

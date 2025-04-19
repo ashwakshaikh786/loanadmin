@@ -9,25 +9,42 @@ import {
   TextField
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import UserListTable from './UserListTable';
+import UserListTable, { User } from './UserListTable';
 import Register from './Register';
 
+// In your UserManager component
 const UserManager = () => {
   const [showForm, setShowForm] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [searchText, setSearchText] = useState('');
   const theme = useTheme();
-  
-  // Screen size breakpoints
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));  // < 600px
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleShowForm = () => setShowForm(true);
-  const handleShowList = () => setShowForm(false);
+  // Remove these unused functions:
+  // const handleShowList = () => setShowForm(false);
+  // const handleBackToList = () => {
+  //   setShowForm(false);
+  //   setIsEditMode(false);
+  // };
+
+  const handleShowForm = () => {
+    setCurrentUser(null);
+    setIsEditMode(false);
+    setShowForm(true);
+  };
+
+  const handleEditUser = (user: User) => {
+    setCurrentUser(user);
+    setIsEditMode(true);
+    setShowForm(true);
+  };
 
   return (
     <Box p={isSmallScreen ? 1 : 2}>
       {!showForm ? (
         <>
-        <Stack
+            <Stack
   direction={isSmallScreen ? 'column' : 'row'}
   justifyContent="space-between"
   alignItems={isSmallScreen ? 'flex-start' : 'center'}
@@ -66,13 +83,21 @@ const UserManager = () => {
       {isSmallScreen ? 'Add' : 'Add User'}
     </Button>
   </Stack>
-</Stack>
-
-          
-          <UserListTable searchText={searchText} /> 
+</Stack>	
+          <UserListTable 
+            searchText={searchText} 
+            onEditUser={handleEditUser} 
+          />
         </>
       ) : (
-        <Register onBackToList={handleShowList} />
+        <Register 
+          onBackToList={() => {
+            setShowForm(false);
+            setIsEditMode(false);
+          }}
+          userData={currentUser}
+          isEditMode={isEditMode}
+        />
       )}
     </Box>
   );

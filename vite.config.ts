@@ -21,6 +21,6 @@ export default defineConfig({
   preview: {
     port: 5000,
   },
-  base: './',
+  base: '/',
 
 });

@@ -310,14 +310,18 @@ const FollowUp: React.FC = () => {
 
   return (
     <Box sx={{ p: { xs: 1, sm: 2 }, pb: 10 }}>
-
+ <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+          
+              
+ <Typography variant={isSmallScreen ? 'h6' : 'h5'}>Follow Ups</Typography>
+     
 <Stack
   spacing={2}
   direction="row"
   sx={{ mb: 2, justifyContent: 'flex-end' }}
   alignItems="center"
 >
-  <TextField
+ <TextField
     label="Search Follow-ups"
     variant="outlined"
     value={searchText}
@@ -346,7 +350,7 @@ const FollowUp: React.FC = () => {
     Download CSV
   </Button>
 </Stack>
-
+</Box>
       
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
         Showing {filteredFollowUps.length} Follow-up Records
@@ -392,7 +396,7 @@ const FollowUp: React.FC = () => {
           {selectedRow && (
             <Box sx={{ mt: 2 }}>
               <Typography>
-                <strong>Follow-up Time:</strong> {selectedRow. max_nextfollowup_dt}
+                <strong>Follow-up Time:</strong> {selectedRow.nextfollowup_at}
               </Typography>
               <Typography sx={{ whiteSpace: 'pre-wrap', mt: 1 }}>
                 <strong>Note:</strong> {selectedRow.note}

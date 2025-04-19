@@ -15,7 +15,7 @@ const Footer = () => {
     >
       Made with ❤️ by{' '}
       <Link href="" target="_blank" rel="noreferrer">
-        {'Centeos Technologies'}
+        {'Centeos Technology'}
       </Link>
     </Typography>
   );
