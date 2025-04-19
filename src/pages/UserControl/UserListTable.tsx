@@ -237,18 +237,18 @@ const UserListTable = ({ searchText, onEditUser }: UserListTableProps) => {
   autoHeight
   sx={{
     '& .MuiDataGrid-columnHeaders div[role="row"]': {
-      backgroundColor: '#0d47a1',
+      backgroundColor: 'primary.main',
       borderRadius:"12px"
     },
     '& .MuiDataGrid-columnHeaderTitle': {
-      color: 'white',
+      color: 'info.light',
       fontWeight: 'bold',
     },
     '& .MuiDataGrid-iconButtonContainer': {
       color: 'white',
     },
     '& .MuiDataGrid-sortIcon': {
-      color: 'white',
+      color: 'info.light',
       fontWeight: 'bold',
     },
   }}
